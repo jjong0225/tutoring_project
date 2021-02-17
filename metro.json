@@ -1,0 +1,35 @@
+[
+    {
+        "station_name" : "숭실대 입구역",
+        "station_code" : 1,
+        "departure_time" : [
+            {
+                "destination_code" : 2,
+                "line" : 7,
+                "departure_time" : 900
+            },
+            {
+                "destination_code" : 2,
+                "line" : 7,
+                "departure_time" : 1000
+            }
+        ]
+    },
+
+    {
+        "station_name" : "고속버스터미널",
+        "station_code" : 2,
+        "departure_time" : [
+            {
+                "destination_code" : 3,
+                "line" : 7,
+                "departure_time" : 1200
+            },
+            {
+                "destination_code" : 4,
+                "line" : 73,
+                "departure_time" : 1300
+            }
+        ]
+    }
+]
