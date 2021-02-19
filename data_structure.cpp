@@ -1,12 +1,10 @@
 #include "objects.cpp"
 #include "objects.h"
+#include "data_structure.h"
 
-typedef struct TreeNode {
-  User data; // user의 id값을 바탕으로 tree 구성
-  struct TreeNode *left, *right;
-} UserTreeNode;
- 
-UserTreeNode *search(UserTreeNode *node, int key)
+
+// 1. UserTreeNode 대하여 Tree구조 형성 
+UserTreeNode *search(UserTreeNode *root, int key) // 데이터에 대한 UserTreeNode 포인터 반환
 {
 }
 
@@ -18,14 +16,8 @@ void delete_node(UserTreeNode *root, int key)
 {
 }
 
-
-// 위의 구현과 똑같이 하면 된다. 단 참조하는 데이터가 달라진다는 점만 유의!
-typedef struct TreeNode_2 {
-  Metro data; // metro의 id값을 바탕으로 tree 구성
-  struct TreeNode_2 *left, *right;
-} MetroTreeNode;
- 
-MetroTreeNode *search(MetroTreeNode *node, int key)
+// 2. MetroTreeNode에 대하여 Tree구조 형성 
+MetroTreeNode *search(MetroTreeNode *root, int key)
 {
 }
 
@@ -36,5 +28,3 @@ void insert_node(MetroTreeNode *root, int key)
 void delete_node(MetroTreeNode *root, int key)
 {
 }
-
-
