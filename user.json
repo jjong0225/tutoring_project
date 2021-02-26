@@ -6,13 +6,13 @@
         "my_schedule" : [
             {
                 "name" : "알바",
-                "stat_time" : 1200,
+                "start_time" : 1200,
                 "end_time" : 1300,
                 "station_code" : 2
             },
             {
                 "name" : "수업",
-                "stat_time" : 1400,
+                "start_time" : 1400,
                 "end_time" : 1500,
                 "station_code" : 3
             }
@@ -25,7 +25,7 @@
         "my_schedule" : [
             {
                 "name" : "멘토링",
-                "stat_time" : 900,
+                "start_time" : 900,
                 "end_time" : 1200,
                 "station_code" : 1
             }
@@ -38,7 +38,97 @@
         "my_schedule" : [
             {
                 "name" : "수업",
-                "stat_time" : 1500,
+                "start_time" : 1500,
+                "end_time" : 1700,
+                "station_code" : 2
+            }
+        ]
+    }, 
+    {
+        "name" : "James",
+        "id" : 1,
+        "main_station_code" : 1,
+        "my_schedule" : [
+            {
+                "name" : "알바",
+                "start_time" : 1200,
+                "end_time" : 1300,
+                "station_code" : 2
+            },
+            {
+                "name" : "수업",
+                "start_time" : 1400,
+                "end_time" : 1500,
+                "station_code" : 3
+            }
+        ]
+    },
+    {
+        "name" : "Tom",
+        "id" : 2,
+        "main_station_code" : 2,
+        "my_schedule" : [
+            {
+                "name" : "멘토링",
+                "start_time" : 900,
+                "end_time" : 1200,
+                "station_code" : 1
+            }
+        ]
+    },
+    {
+        "name" : "Justin",
+        "id" : 3,
+        "main_station_code" : 1,
+        "my_schedule" : [
+            {
+                "name" : "수업",
+                "start_time" : 1500,
+                "end_time" : 1700,
+                "station_code" : 2
+            }
+        ]
+    }, 
+    {
+        "name" : "Anne",
+        "id" : 1,
+        "main_station_code" : 1,
+        "my_schedule" : [
+            {
+                "name" : "알바",
+                "start_time" : 1200,
+                "end_time" : 1300,
+                "station_code" : 2
+            },
+            {
+                "name" : "수업",
+                "start_time" : 1400,
+                "end_time" : 1500,
+                "station_code" : 3
+            }
+        ]
+    },
+    {
+        "name" : "Julia",
+        "id" : 2,
+        "main_station_code" : 2,
+        "my_schedule" : [
+            {
+                "name" : "멘토링",
+                "start_time" : 900,
+                "end_time" : 1200,
+                "station_code" : 1
+            }
+        ]
+    },
+    {
+        "name" : "Vein",
+        "id" : 3,
+        "main_station_code" : 1,
+        "my_schedule" : [
+            {
+                "name" : "수업",
+                "start_time" : 1500,
                 "end_time" : 1700,
                 "station_code" : 2
             }
