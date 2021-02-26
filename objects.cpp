@@ -1,68 +1,112 @@
 #include "objects.h"
+#include "data_structure.h"
+#include <iostream>
+#include <list>
 using namespace std;
 
-class Schedule
+// Schedule Class
+
+Schedule::Schedule(string param_name, int param_start_time, int param_end_time, int param_station_code)
 {
-    private :
-        string name; // 스케쥴 이름
-        int start_time; // 시작 시간, HHMM 형식
-        int end_time; // 종료 시간, HHMM 형식
-        int station_code; // 역 코드
-    public :
-        Schedule(string param_name, int param_start_time, int param_end_time, int param_station_code)
-        {
-            // 생성자 코드
-        }
-        void print_schedule()
-        {
-            // 스케쥴 프린트
-        }
+	// 생성자 코드
+	this->name = param_name;
+	this->start_time = param_start_time;
+	this->end_time = param_end_time;
+	this->station_code = param_station_code;
+}
+
+void Schedule::print_schedule()
+{
+	// 스케쥴 프린트
+	cout << "[Schedule]" << endl;
+	cout << this->name << endl;
+	cout << this->start_time << endl;
+	cout << this->end_time << endl;
+	cout << this->station_code << endl;
+}
+
+// User Class
+
+User::User(string param_string, int param_main_station_code)
+{
+	// 생성자 코드, id는 string hash로 할당해주기
+	this->name = param_string;
+	this->id = hash<string>{}(param_string);
+	this->main_station_code = param_main_station_code;
+}
+void User::print()
+{
+	// 내 정보 출력
+	cout << "[User Info]" << endl;
+	cout << this->name << endl;
+	cout << this->id << endl;
+	cout << this->main_station_code << endl;
+}           
+
+void User::insert_schedule(Schedule schedule)
+{
+	this->my_schedule.push_back(schedule);
+	// 스케쥴 삽입
+}
+
+void User::print_my_schedule()
+{
+	// 자신의 모든 스케쥴 출력
+	for(auto schedule : this->my_schedule) {
+		schedule.print_schedule();
+	}
+}
+
+int User::get_id()
+{
+	return this->id;	
+}
+
+
+// Metro Class
+
+Metro::Metro(string param_station_name, int param_station_code)
+{
+	// 생성자
+	this->station_name = param_station_name;
+	this->station_code = hash<string>{}(param_station_name);
+}
+int Metro::find_maximum_time(int param_time)
+{
+	// param_time보다 같거나 큰 departure_time 중 가장 가까운 값 리턴
+	return 0;
+}
+int Metro::get_id() {
+	return this->station_code;	
+}
+void Metro::insert_departure_info(Departure departure_info)
+{
+	this->departure_info_list.push_back(departure_info);	
+}
+void Metro::print() {
+	cout << "[Metro]" << endl;
+	cout << station_name << endl;
+	cout << station_code << endl;
+	for(auto departure_info : this->departure_info_list) {
+		departure_info.print();
+	}
+}
+
+// Departure Class
+
+Departure::Departure(int destination_code, int line, int departure_time)
+{
+	this->destination_code = destination_code;
+	this->line = line;
+	this->departure_time = departure_time;
 };
 
-class User
-{
-    private :
-        string name; // 유저 이름
-        int id; // 유저 아이디
-        int main_station_code; // 유저의 역, 스케쥴의 언제나 맨 처음이고 언제나 맨 마지막이다. 변하면 안됨
-        list<Schedule> my_schedule; // 스케쥴의 백터
-    public :
-        User(string param_string, int param_main_station_code)
-        {
-            // 생성자 코드, id는 string hash로 할당해주기
-        }
-        void print_my_info()
-        {
-            // 내 정보 출력
-        }
-
-        void insert_schedule(string param_schedule_name, int param_start_time, int param_end_time, int param_station_code)
-        {
-            // 스케쥴 삽입
-        }
-
-        void print_my_schedule()
-        {
-            // 자신의 모든 스케쥴 출력
-        }
-};
-
-class Metro
-{
-    private :
-        string station_name;
-        int station_code;
-        vector<array<int,3>> departure_time; // 도착역,호선,출발시간
-    public :
-        Metro(string param_station_name, int param_station_code, vector<int> param_departure_time)
-        {
-            // 생성자
-        }
-        int find_maximum_time(int param_time)
-        {
-            // param_time보다 같거나 큰 departure_time 중 가장 가까운 값 리턴
-        }
-};
+void Departure::print() {
+	cout << "[Departure]" << endl;	
+	cout << destination_code << endl;
+	cout << line << endl;
+	cout << departure_time << endl;
+}
 
 void init_graph()
 {
@@ -89,5 +133,7 @@ string find_optimized_schedule_path(Node A, Node B)
             즉, 걸리는 시간과 출발역의 스케쥴까지 고려하는 것
         -방법 3. 방법2에서 환승역의 스케쥴까지 고려하는 것
    */
-}
+	string s;
 
+	return s;
+};

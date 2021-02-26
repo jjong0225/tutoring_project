@@ -1,3 +1,6 @@
+#ifndef OBJECTS_H
+#define OBJECTS_H
+
 #include<string>
 #include<vector>
 #include<list>
@@ -26,10 +29,22 @@ class User
         list<Schedule> my_schedule; // 스케쥴의 백터
     public :
         User(string param_string, int param_main_station_code);
-        void print_my_info();
-        void insert_schedule(string param_schedule_name, int param_start_time, int param_end_time, int param_station_code);
+        void print();
+        void insert_schedule(Schedule schedule);
+		int get_id();
         void print_my_schedule();
         string find_optimized_schedule_path();
+};
+
+class Departure
+{
+	private:
+		int destination_code;
+		int line;	
+		int departure_time;
+	public:	
+        Departure(int destination_code, int line, int departure_time);
+        void print();
 };
 
 class Metro
@@ -37,8 +52,14 @@ class Metro
     private :
         string station_name;
         int station_code;
-        vector<array<int,3>> departure_time;
+		list<Departure> departure_info_list;
+        //vector<array<int,3>> departure_time;
     public :
-        Metro(string param_station_name, int param_station_code, vector<int> param_departure_time);
+        Metro(string param_station_name, int param_station_code);
         int find_maximum_time(int param_time);
+		int get_id();
+		void insert_departure_info(Departure departure_info);
+		void print();
 };
+
+#endif
