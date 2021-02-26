@@ -1,3 +1,6 @@
+#ifndef DATA_STRUCTURE_H
+#define DATA_STRUCTURE_H
+
 #include "objects.h"
 
 // 1. User객체를  저장하는 Tree인 UserTreeNode구현
@@ -31,3 +34,4 @@ typedef struct node
     int station_id;
     vector<pair<struct node *, int>>station_ptr; // (연결된 역, 걸리는 시간) 쌍의 벡터
 } Node;
+#endif

@@ -2,7 +2,7 @@
     {
         "station_name" : "숭실대 입구역",
         "station_code" : 1,
-        "departure_time" : [
+        "departure_info" : [
             {
                 "destination_code" : 2,
                 "line" : 7,
@@ -19,7 +19,7 @@
     {
         "station_name" : "고속버스터미널",
         "station_code" : 2,
-        "departure_time" : [
+        "departure_info" : [
             {
                 "destination_code" : 3,
                 "line" : 7,
