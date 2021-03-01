@@ -254,7 +254,7 @@ void insert_departure_data(Metro metro, int station_code,vector<vector<int>> All
 	}
 }
 
-string invert_time(int time){
+string convert_time(int time){
     
     string time_Str=to_string(time);
     if(time%100>=60){
@@ -382,7 +382,7 @@ pair<int,int> find_min_path(int present_station,int next_station,int start_time)
    if(wait_time<=-1 || min_departure==0xfffff){
         return make_pair(0,0); }
    else{
-   return make_pair(stoi(invert_time(wait_time)),min_departure);
+   return make_pair(stoi(convert_time(wait_time)),min_departure);
    }
     
 }
@@ -408,7 +408,7 @@ pair<int,int> print_find_min_path(int present_station,int next_station,int start
    tuple<int,node*,int> temp= find_connect_node(node_array[present_station],next_station);
 
    for(int i=0;i<node_departure_list[next_station].size();i++){
-       start_time=stoi(invert_time(start_time));
+       start_time=stoi(convert_time(start_time));
       if(node_departure_list[next_station][i] >=start_time  && min_departure>node_departure_list[next_station][i])          
         {
            int param=node_departure_list[next_station][i];
@@ -425,12 +425,12 @@ pair<int,int> print_find_min_path(int present_station,int next_station,int start
         return make_pair(0,0); }
    else{
        if(op){
-         cout<<"현재 시간: " <<print_HHMM(invert_time(start_time))<<endl;   
+         cout<<"현재 시간: " <<print_HHMM(convert_time(start_time))<<endl;   
          cout<<"다음 역: "<<next_station<<" 행 "<<'\n'<<"가장 빠른 열차 출발 시간: "
-         <<print_HHMM(invert_time(min_departure))<<'\n';
-         cout<< "소요 대기 시간: "<< print_HHMM(invert_time(wait_time))<<"("<<wait_time<<")";
+         <<print_HHMM(convert_time(min_departure))<<'\n';
+         cout<< "소요 대기 시간: "<< print_HHMM(convert_time(wait_time))<<"("<<wait_time<<")";
          cout<<'\n'<<"=========================================="<<'\n'; }
-   return make_pair(stoi(invert_time(wait_time)),min_departure);
+   return make_pair(stoi(convert_time(wait_time)),min_departure);
    }
     
 }
@@ -485,12 +485,12 @@ pair<vector<int>, vector<tuple<int,int,int>>> trans_dijkstra(int departure,int a
             {                         
                 dist[there] = nextDist;   
               
-                //cout<<"update: "<<nextDist<<" time "<< invert_time(nextDist)<<endl;                 
+                //cout<<"update: "<<nextDist<<" time "<< convert_time(nextDist)<<endl;                 
                 q.push(make_tuple(nextDist, &node_array[there],there_rail));
-               // path[there]=make_tuple(here,there_rail,stoi(invert_time(nextDist))); // 역추적을 위한 경로 저장
+               // path[there]=make_tuple(here,there_rail,stoi(convert_time(nextDist))); // 역추적을 위한 경로 저장
                 path[there]=make_tuple(here,there_rail,min_to_hour(nextDist));                        
             }else{
-               // cout<<"no update: "<<dist[there]<<" time "<< invert_time(dist[there])<<endl;
+               // cout<<"no update: "<<dist[there]<<" time "<< convert_time(dist[there])<<endl;
             }
         }
     }     
@@ -529,9 +529,9 @@ void search_optimize_schedule(vector<pair<int,int>> search_line, int departure_t
                     else temp=find_connect_node(node_array[search_line[i].first],search_line[i-2].first);
                     int time=get<0>(temp);
                     
-                    //cout<< " 최종 도착 시간: "<<print_HHMM(invert_time( search_line[i].second+departure_time))<<endl;
+                    //cout<< " 최종 도착 시간: "<<print_HHMM(convert_time( search_line[i].second+departure_time))<<endl;
                      cout<<'\n'<<"최종 목적지 "<<search_line[i].first<<" 역 도착"<<endl;
-                     cout<<"최종 도착 시간: "<<print_HHMM(invert_time(search_line[i].second+departure_time))<<endl;
+                     cout<<"최종 도착 시간: "<<print_HHMM(convert_time(search_line[i].second+departure_time))<<endl;
                     cout<<'\n'<<"=========================================="<<'\n'; 
                      break;
              }
@@ -574,14 +574,14 @@ int find_max_departure_time(Node A, Node B,int now_time,int deadline_time){
     track_optimize_path=track_path(A.station_id,B.station_id,schedule_optimize_path.second);
     int destination=track_optimize_path.second.size()-1;
     tot=track_optimize_path.second[destination].second;
-    if(stoi(invert_time(tot+time_cur))>deadline_time){
+    if(stoi(convert_time(tot+time_cur))>deadline_time){
          schedule_optimize_path=trans_dijkstra(A.station_id,B.station_id,before);
         track_optimize_path=track_path(A.station_id,B.station_id,schedule_optimize_path.second);   
          break;    
     }else{
          max=tot;
          before=time_cur;
-         time_cur=stoi(invert_time(departure+(i++))); 
+         time_cur=stoi(convert_time(departure+(i++))); 
         } 
     }
    
@@ -617,7 +617,7 @@ string find_optimized_schedule_path(Node A, Node B,int time){
     pair<string,vector<pair<int,int>>> track_optimize_path=track_path(A.station_id,B.station_id,schedule_optimize_path.second);
     
      cout<<'\n'<<"========= < Optimize Schedule > =========="<<endl;
-     cout<< '\n'<<"현재 시각 "<<print_HHMM(invert_time(estimated_departure));
+     cout<< '\n'<<"현재 시각 "<<print_HHMM(convert_time(estimated_departure));
      string schedule_Str= "스케줄 : " +  to_string(A.station_id) +" -> "+to_string(B.station_id)+'\n';
     
     int destination=track_optimize_path.second.size()-1;
@@ -627,9 +627,9 @@ string find_optimized_schedule_path(Node A, Node B,int time){
     string schedule_Path_str="Path :"+get<0>(track_optimize_path)+'\n';
     
     int min_arrive_time= track_optimize_path.second[destination].second + estimated_departure ;// 출발 시간+ 최단 시간 경로의 시간
-    string min_arrive_time_str="최소 도착 시간 "+print_HHMM(invert_time(min_arrive_time))+'\n';
+    string min_arrive_time_str="최소 도착 시간 "+print_HHMM(convert_time(min_arrive_time))+'\n';
      
-    string max_time_Str="최대 출발 시간 "+print_HHMM(invert_time(find_max_departure_time(A,B,estimated_departure,estimated_arrive)))+'\n';
+    string max_time_Str="최대 출발 시간 "+print_HHMM(convert_time(find_max_departure_time(A,B,estimated_departure,estimated_arrive)))+'\n';
     string result= schedule_Str+minimum_schecdule_path_Str+schedule_transfer_num_str+ schedule_Path_str+min_arrive_time_str+max_time_Str;
     cout<<result;
     search_optimize_schedule(track_optimize_path.second,estimated_departure);  
