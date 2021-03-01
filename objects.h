@@ -1,10 +1,17 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-#include<string>
 #include<vector>
-#include<list>
+#include<string>
+#include<algorithm>
 #include<array>
+#include<queue>
+#include<stack>
+#include<tuple>
+#include <sstream>
+#include <cmath>
+#include<list>
+#include<fstream>
 
 using namespace std;
 
@@ -32,6 +39,8 @@ class User
         void print();
         void insert_schedule(Schedule schedule);
 		int get_id();
+        string get_name();
+        int get_stationCode();
         void print_my_schedule();
         string find_optimized_schedule_path();
 };
