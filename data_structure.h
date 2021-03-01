@@ -32,6 +32,6 @@ void delete_node(MetroTreeNode *root, int key);
 typedef struct node
 {
     int station_id;
-    vector<pair<struct node *, int>>station_ptr; // (연결된 역, 걸리는 시간) 쌍의 벡터
+    vector<tuple<int,struct node *, int>>station_ptr; // (연결된 역, 걸리는 시간) 쌍의 벡터
 } Node;
 #endif

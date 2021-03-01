@@ -1,10 +1,17 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-#include<string>
 #include<vector>
-#include<list>
+#include<string>
+#include<algorithm>
 #include<array>
+#include<queue>
+#include<stack>
+#include<tuple>
+#include <sstream>
+#include <cmath>
+#include<list>
+#include<fstream>
 
 using namespace std;
 

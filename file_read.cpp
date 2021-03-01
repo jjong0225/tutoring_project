@@ -1,10 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
-#include <vector>
 #include "json/json.h"
+#include "jsoncpp.cpp" //변겅
+#include "objects.h" // 변경
+#include "objects.cpp" // 변경
 #include "data_structure.h"
-
 
 std::vector<User> userObjs;
 std::vector<Metro> metroObjs;
@@ -118,16 +119,18 @@ MetroTreeNode* read_metro_data()
 	else
 		std::cerr << "Failed to parse Json";
 	
-//	for(auto obj : metroObjs) {
-//		obj.print();
-//	}
+	// for(auto obj : metroObjs) {
+	// 	obj.print();
+	// }
 
     // metro 파일을 읽어 tree구조로 저장한다.
 	MetroTreeNode* temp;
 	return temp;
 }
-
 int main() {
+
+	
+    
 	read_user_data();
 	read_metro_data();
 
@@ -137,10 +140,46 @@ int main() {
 	travel_map(metroMap);
 	travel_map(userMap);
 
+	//  find_item(userMap, "James");
+	//  find_item(metroMap, "고속버스터미널");
 
-	find_item(userMap, "James");
-	find_item(metroMap, "고속버스터미널");
+    init_graph();//노선 그래프 생성	
+	make_Metro(); // 임의로 객체 생성, JSON 파일을 읽는 방식으로 변경해야함
+	vector<vector<int>> Alldeparture_list=init_departure_info();
+
+    insert_departure_data(Metro_array[5],5,Alldeparture_list);
+	// Metro_array[5].print();
+
+	/* 노선, 현재 시간, 다음 스케줄 시작 시간으로 최적의 스케줄 출력
+	int now_time=1000;
+	find_optimized_schedule_path(node_array[16],node_array[7],now_time);
+	find_optimized_schedule_path(node_array[3],node_array[12],now_time-100);
+	*/
+
+	Schedule schedule1("person A",800,1000,4);
+	Schedule schedule2("person B",800,1100,5);
+	User A("person A",2);
+	User B("person B",17);
+	A.insert_schedule(schedule1);
+	B.insert_schedule(schedule2);
 	
+	cout<<"============ < 중간 역 조회 >=========="<< endl;
+
+	int now_time=1000;
+	int get_A_main_station_code=2; //main station 정보 읽기
+	int get_B_main_station_code=15; 
+	
+	pair<vector<int>,vector<tuple<int,int,int>>> a_result= trans_dijkstra(get_A_main_station_code,get_B_main_station_code,now_time);
+    pair<vector<int>,vector<tuple<int,int,int>>> b_result= trans_dijkstra(get_B_main_station_code,get_A_main_station_code,now_time);
+	int fair_station= find_fair_station( a_result.first,b_result.first,get_A_main_station_code,get_B_main_station_code);
+
+    cout<<"A path: "<< track_path(get_A_main_station_code,fair_station,a_result.second).first<<endl<<endl;
+	find_optimized_schedule_path(node_array[get_A_main_station_code],node_array[fair_station],now_time);
+    cout<<"B path: "<<track_path(get_B_main_station_code,fair_station,b_result.second).first<<endl; 
+	find_optimized_schedule_path(node_array[get_B_main_station_code],node_array[fair_station],now_time);
+   
+
+ 
 
 	return 0;
 }
