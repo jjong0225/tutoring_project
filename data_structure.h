@@ -3,9 +3,13 @@
 
 #include "objects.h"
 
+#define RED 1
+#define BLACK 0
 // 1. User객체를  저장하는 Tree인 UserTreeNode구현
 typedef struct TreeNode {
   User data; // user의 id값을 바탕으로 tree 구성
+  bool color;
+  struct TreeNode *parent;
   struct TreeNode *left, *right;
 } UserTreeNode;
 
@@ -14,11 +18,12 @@ void insert_node(UserTreeNode *root, int key);
 void delete_node(UserTreeNode *root, int key);
 
 
-
 // 2. Metro객체를  저장하는 Tree인 MetroTreeNode구현
 // 위의 구현과 똑같이 하면 된다. 단 참조하는 데이터가 달라진다는 점만 유의!
 typedef struct TreeNode_2 {
   Metro data; // metro의 id값을 바탕으로 tree 구성
+  bool color;
+  struct TreeNode_2 *parent;
   struct TreeNode_2 *left, *right;
 } MetroTreeNode;
 
