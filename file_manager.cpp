@@ -24,7 +24,7 @@ UserTreeNode* read_user_data()
 	Json::Value jsonData;
 	Json::CharReaderBuilder jsonReader;
 	std::string err;	
-
+	UserTreeNode *root= nullptr;
 	if(Json::parseFromStream(jsonReader, jsonFile, &jsonData, &err)) {
 		Json::Value userData = jsonData;
 
@@ -43,15 +43,15 @@ UserTreeNode* read_user_data()
 				Schedule scheduleObj = Schedule(name, start_time, end_time, station_name);
 				userObj.insert_schedule(scheduleObj);
 			}
-
+			User *userP= &userObj;
+			insert_node(root, *userP);
 			userMap.insert(std::pair<int, User>(userObj.get_id(), userObj));
 		}
 	}
 	else
 		std::cerr << "Failed to parse Json";
 	
-	UserTreeNode* temp;
-	return temp;
+	return root;
 }
 
 // 위와 같다, Metro 객체인것만 제외한다면
@@ -62,7 +62,7 @@ MetroTreeNode* read_metro_data()
 	Json::Value jsonData;
 	Json::CharReaderBuilder jsonReader;
 	std::string err;	
-
+	MetroTreeNode *root= nullptr;
 	if(Json::parseFromStream(jsonReader, jsonFile, &jsonData, &err)) {
 		Json::Value metroData = jsonData;
 
@@ -80,15 +80,15 @@ MetroTreeNode* read_metro_data()
 				Departure scheduleObj = Departure(station_name, line, departure_time);
 				metroObj.insert_departure(scheduleObj);
 			}
-
+			Metro *metroP= &metroObj;
+			insert_node(root, *metroP);
 			metroMap.insert(std::pair<int, Metro>(metroObj.get_id(), metroObj));
 		}
 	}
 	else
 		std::cerr << "Failed to parse Json";
 	
-	MetroTreeNode* temp;
-	return temp;
+	return root;
 }
 
 void save_user_data() {
