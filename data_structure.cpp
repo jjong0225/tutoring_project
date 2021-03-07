@@ -52,17 +52,25 @@ void delete_node(UserTreeNode *root, int key)
 	else if(root->left == NULL && root->right != NULL){
 		if(root->parent->left == root){
 			root->parent->left = root->right;
+			root->right->parent = root->parent;
+			root = root->right;
 		} 
 		else{
 			root->parent->right = root->right;
+			root->right->parent = root->parent;
+			root = root->right;
 		}
 	}
 	else if(root->left != NULL && root->right == NULL){
 		if(root->parent->left == root){
 			root->parent->left = root->left;
+			root->left->parent = root->parent;
+			root = root->left;
 		} 
 		else{
 			root->parent->right = root->left;
+			root->left->parent = root->parent;
+			root = root->left;
 		}
 	}
 	else{  //자식2개있을때
@@ -85,12 +93,15 @@ void delete_node(UserTreeNode *root, int key)
 			root->parent->left = remove;
 			remove->left = root->left;
 			remove->right = root->right;
+			remove->parent = root->parent;
+
 			root = remove;
 		} 
 		else{
 			root->parent->right = remove;
 			remove->left = root->left;
 			remove->right = root->right;
+			remove->parent = root->parent;
 			root = remove;
 		}
 	}
