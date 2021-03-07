@@ -14,7 +14,8 @@ typedef struct TreeNode {
   struct TreeNode *left, *right;
 } UserTreeNode;
 
-UserTreeNode *search(UserTreeNode *node, int key);
+template <typename T>
+T *search(T *node, int key);
 void insert_node(UserTreeNode *&root, User &userNode);
 void delete_node(UserTreeNode *root, int key);
 

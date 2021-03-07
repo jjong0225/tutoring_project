@@ -2,9 +2,10 @@
 #include "data_structure.h"
 
 // 1. UserTreeNode 대하여 Tree구조 형성 
-UserTreeNode *search(UserTreeNode *root, int key) // 데이터에 대한 UserTreeNode 포인터 반환
+template <typename T>
+T *search(T *root, int key) // 데이터에 대한 UserTreeNode 포인터 반환
 {
-    UserTreeNode *leftNode, *rightNode;
+    T *leftNode, *rightNode;
     if (root == nullptr)
         return nullptr;
     if(root->data.get_id() == key)
