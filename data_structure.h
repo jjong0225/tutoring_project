@@ -15,7 +15,26 @@ typedef struct TreeNode {
 } UserTreeNode;
 
 template <typename T>
-T *search(T *node, int key);
+T *search(T *root, int key) // 데이터에 대한 UserTreeNode 포인터 반환
+{
+    T *leftNode = nullptr, *rightNode = nullptr;
+    if (root == nullptr)
+        return nullptr;
+    if(root->data.get_id() == key)
+        return root;
+    else if (root->data.get_id() < key && root->right != nullptr)
+        rightNode = search(root->right, key);
+    else if (root->data.get_id() > key && root->left != nullptr)
+        leftNode = search(root->left, key);
+    
+    if(rightNode == nullptr && leftNode ==nullptr)
+        return nullptr;
+    else if(rightNode == nullptr)
+        return leftNode;
+    else
+        return rightNode;
+}
+
 void insert_node(UserTreeNode *&root, User &userNode);
 void delete_node(UserTreeNode *root, int key);
 
@@ -46,7 +65,6 @@ typedef struct TreeNode_2 {
   struct TreeNode_2 *left, *right;
 } MetroTreeNode;
 
-MetroTreeNode *search(MetroTreeNode *node, int key);
 void insert_node(MetroTreeNode *&root, Metro &metroNode);
 void delete_node(MetroTreeNode *root, int key);
 

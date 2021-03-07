@@ -2,26 +2,6 @@
 #include "data_structure.h"
 
 // 1. UserTreeNode 대하여 Tree구조 형성 
-template <typename T>
-T *search(T *root, int key) // 데이터에 대한 UserTreeNode 포인터 반환
-{
-    T *leftNode, *rightNode;
-    if (root == nullptr)
-        return nullptr;
-    if(root->data.get_id() == key)
-        return root;
-    else if (root->data.get_id() < key)
-        rightNode = search(root->right, key);
-    else if (root->data.get_id() > key)
-        leftNode = search(root->left, key);
-    
-    if(rightNode == nullptr && leftNode ==nullptr)
-        return nullptr;
-    else if(rightNode == nullptr)
-        return leftNode;
-    else
-        return rightNode;
-}
 
 void insert_node(UserTreeNode *&root, User &userNode)
 {
@@ -225,25 +205,6 @@ void delete_node(UserTreeNode *root, int key)
 
 
 // 2. MetroTreeNode에 대하여 Tree구조 형성 
-// MetroTreeNode *search(MetroTreeNode *root, int key)
-// {
-//     MetroTreeNode *leftNode, *rightNode;
-//     if (root == nullptr)
-//         return nullptr;
-//     if(root->data.station_code == key)
-//         return root;
-//     else if (root->data.station_code < key)
-//         rightNode = search(root->right, key);
-//     else if (root->data.station_code > key)
-//         leftNode = search(root->left, key);
-    
-//     if(rightNode == nullptr && leftNode ==nullptr)
-//         return nullptr;
-//     else if(rightNode == nullptr)
-//         return leftNode;
-//     else
-//         return rightNode;
-// }
 
 void insert_node(MetroTreeNode *&root, Metro &metroNode)
 {

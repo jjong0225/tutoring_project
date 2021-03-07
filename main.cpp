@@ -22,8 +22,6 @@ int main()
     print_node(user_root);
     printf("----------metro nodes---------\n");
     print_node(metro_root);
-    
-
 	//find_item(userMap, "안종훈");
 	//find_item(metroMap, "고속터미널");
 
