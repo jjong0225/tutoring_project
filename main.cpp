@@ -13,14 +13,17 @@ Node STATION_NODE[NUM_OF_STATION] = {0};
 int main()
 {
     // 파일 읽는 부분
-    read_user_data();
-    read_metro_data();
+    UserTreeNode* user_root = read_user_data();
+    MetroTreeNode* metro_root = read_metro_data();
 
 	travel_map(userMap);
 	travel_map(metroMap);
-
-	find_item(userMap, "안종훈");
-	find_item(metroMap, "고속터미널");
+    printf("------user nodes-------\n");
+    print_node(user_root);
+    printf("----------metro nodes---------\n");
+    print_node(metro_root);
+	//find_item(userMap, "안종훈");
+	//find_item(metroMap, "고속터미널");
 
 
 

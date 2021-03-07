@@ -50,16 +50,22 @@ User::User(string param_string, string param_main_station_name)
 	this->id = hash<string>{}(param_string);
 	this->station_name = param_main_station_name;
 }
-string User::get_name() {
+User::User(const User &copy_user)
+{
+	name = copy_user.get_name();
+    station_name = copy_user.get_station_name(); // 유저의 역, 스케쥴의 언제나 맨 처음이고 언제나 맨 마지막이다. 변하면 안됨
+    id = copy_user.get_id();
+}
+string User::get_name() const{
 	return this->name;
 }
-string User::get_station_name() {
+string User::get_station_name() const{
 	return this->station_name;
 }
-int User::get_id() {
+int User::get_id() const{
 	return this->id;
 }
-list<Schedule> User::get_schedule_list() {
+list<Schedule> User::get_schedule_list(){
 	return this->schedule_list;
 }
 void User::insert_schedule(Schedule schedule)
@@ -87,23 +93,23 @@ Metro::Metro(string param_station_name, int param_station_code)
 	this->station_name = param_station_name;
 	this->id = hash<string>{}(param_station_name);
 }
-string Metro::get_station_name() {
+Metro::Metro(const Metro &copy_metro)
+{
+	station_name = copy_metro.get_station_name();
+    id = copy_metro.get_id();
+}
+string Metro::get_station_name() const{
 	return this->station_name;
 }
-int Metro::get_id() {
+int Metro::get_id() const{
 	return this->id;	
 }
-list<Departure> Metro::get_departure_list() {
+list<Departure> Metro::get_departure_list() const{
 	return this-> departure_list;
 }
 void Metro::insert_departure(Departure departure)
 {
 	this->departure_list.push_back(departure);	
-}
-int Metro::find_maximum_time(int param_time)
-{
-	// param_time보다 같거나 큰 departure_time 중 가장 가까운 값 리턴
-	return 0;
 }
 void Metro::print() {
 	cout << "[Metro]" << endl;

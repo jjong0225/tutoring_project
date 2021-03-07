@@ -35,9 +35,10 @@ class User
         list<Schedule> schedule_list; // 스케쥴의 백터
     public :
         User(string param_string, string param_main_station_code);
-		string get_name();
-		string get_station_name();
-		int get_id();
+        User(const User &copy_user);
+		string get_name() const;
+		string get_station_name() const;
+		int get_id() const;
 		list<Schedule> get_schedule_list();
         void insert_schedule(Schedule schedule);
         string find_optimized_schedule_path();
@@ -68,9 +69,10 @@ class Metro
 		list<Departure> departure_list;
     public :
         Metro(string param_station_name, int param_station_code);
-		string get_station_name();
-		int get_id();
-		list<Departure> get_departure_list();
+        Metro(const Metro &copy_metro);
+		string get_station_name() const;
+		int get_id() const;
+		list<Departure> get_departure_list() const;
 		void insert_departure(Departure departure);
         int find_maximum_time(int param_time);
 		void print();
