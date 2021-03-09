@@ -76,10 +76,14 @@ MetroTreeNode* read_metro_data()
 			for(auto departure : metro["departure_list"]) {
 				string station_name = departure["station_name"].asString(); 
 				int line = departure["line"].asInt(); 
-				int departure_time = departure["departure_time"].asInt();
+				list<int> departure_time;
+				for(auto i : departure["departure_time"]) {
+					departure_time.push_back(i.asInt());
+				}
+				int time_weight = departure["time_weight"].asInt();
 
-				Departure scheduleObj = Departure(station_name, line, departure_time);
-				metroObj.insert_departure(scheduleObj);
+				Departure departureObj = Departure(station_name, line, departure_time, time_weight);
+				metroObj.insert_departure(departureObj);
 			}
 			Metro *metroP= &metroObj;
 			insert_node(root, *metroP);

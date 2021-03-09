@@ -122,12 +122,13 @@ void Metro::print() {
 
 // Departure Class
 
-Departure::Departure(string station_name, int line, int departure_time)
+Departure::Departure(string station_name, int line, list<int> departure_time, int time_weight)
 {
 	this->station_name = station_name;
 	this->id = hash<string>{}(station_name);
 	this->line = line;
 	this->departure_time = departure_time;
+	this->time_weight = time_weight;
 };
 string Departure::get_station_name() {
 	return this->station_name;	
@@ -138,15 +139,21 @@ int Departure::get_id() {
 int Departure::get_line() {
 	return this->line;	
 }
-int Departure::get_departure_time() {
+list<int> Departure::get_departure_time() {
 	return this->departure_time;	
+}
+int Departure::get_time_weight() {
+	return this->time_weight;	
 }
 void Departure::print() {
 	cout << "[Departure]" << endl;	
 	cout << station_name << endl;
 	cout << id << endl;
 	cout << line << endl;
-	cout << departure_time << endl;
+	for(auto i : departure_time)
+		cout << i << " ";
+	cout << endl;
+	cout << time_weight << endl;
 }
 
 void init_graph()
