@@ -231,53 +231,62 @@ void insert_node(MetroTreeNode *&root, Metro &metroNode)
             Metro(metroNode),
             BLACK, nullptr, nullptr, nullptr
         };
-        list<Departure>::iterator input = metroNode.get_departure_list().begin();
-        for(int i=0; i< metroNode.get_departure_list().size(); i++){
+        list<Departure> input_list = metroNode.get_departure_list();
+        list<Departure>::iterator input = input_list.begin();
+        for(int i=0; i< input_list.size(); i++){
             root->data.insert_departure(*input);
+            input++;
         }
-		return;
+        return;
     }
     else{
+        int metro_id = metroNode.get_id();
         while (true)
         {
             MetroTreeNode * tmpNode = this_node;
-            if(this_node->data.get_id() < metroNode.get_id() && this_node->right == nullptr)//루트노드 id 보다 크고 right가 null이면
+            int this_id = this_node->data.get_id();
+            int flag = 0;
+            if(this_id < metro_id)//루트노드 id 보다 크면
             {
-                this_node->right = new MetroTreeNode
+                if(this_node->right != nullptr)
+                    this_node = this_node->right;
+                else
+                    flag = 1;
+            }
+            else if(this_id > metro_id)//루트노드 id 보다 작으면
+            {
+                if(this_node->left != nullptr)
+                    this_node = this_node->left;
+                else
+                    flag = 2;
+            }
+
+            if(flag != 0)
+            {
+                MetroTreeNode * new_node = new MetroTreeNode
                 {
                     Metro(metroNode),
                     RED, nullptr, nullptr, nullptr
                 };
-                this_node = this_node->right;
-                list<Departure>::iterator input = metroNode.get_departure_list().begin();
-                for(int i=0; i< metroNode.get_departure_list().size(); i++){
-                    this_node->data.insert_departure(*input);
+                list<Departure> input_list = metroNode.get_departure_list();
+                list<Departure>::iterator input = input_list.begin();
+                for(int i=0; i< input_list.size(); i++){
+                    new_node->data.insert_departure(*input);
+                    input++;
                 }
-                this_node->parent = tmpNode;
-                break;
-            }
-            else if(this_node->data.get_id() > metroNode.get_id() && this_node->left == nullptr)//루트노드 id 보다 크고 right가 null이면
-            {
-                this_node->left = new MetroTreeNode
+                if(flag == 1)
                 {
-                    Metro(metroNode),
-                    RED, nullptr, nullptr, nullptr
-                };
-                this_node = this_node->left;
-                list<Departure>::iterator input = metroNode.get_departure_list().begin();
-                for(int i=0; i< metroNode.get_departure_list().size(); i++){
-                    this_node->data.insert_departure(*input);
+                    this_node -> right = new_node;
+                    new_node -> parent = this_node;
+                    this_node = this_node -> right;
                 }
-                this_node->parent = tmpNode;
+                if(flag == 2)
+                {
+                    this_node -> left = new_node;
+                    new_node -> parent = this_node;
+                    this_node = this_node -> left;
+                }
                 break;
-            }
-            else if(this_node->data.get_id() < metroNode.get_id())//루트노드 id 보다 크면
-            {
-                this_node = this_node->right;
-            }
-            else if(this_node->data.get_id() > metroNode.get_id())//루트노드 id 보다 작으면
-            {
-                this_node = this_node->left;
             }
         }
     }
