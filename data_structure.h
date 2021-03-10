@@ -3,6 +3,7 @@
 
 #include "objects.h"
 #include <stack>
+#include <queue>
 
 #define RED 1
 #define BLACK 0
@@ -43,16 +44,21 @@ void reviseTree(T *&, T *);
 
 template <typename T>
 void print_node(T * root){
-    stack<T*> s;
+    queue<T*> s;
     s.push(root);
     while(!s.empty()){
-        T* now = s.top();
+        T* now = s.front();
         s.pop();
-        printf("id: %d, color: %d\n", now->data.get_id(), now->color);
-        if(now->right != nullptr)
-            s.push(now->right);
+        printf("id: %d, color: %d", now->data.get_id(), now->color);
+		now->data.print();
+        if(now->parent != NULL)
+            printf(" parent_id : %d\n", now->parent->data.get_id());
+        else
+            printf(", root node\n");
         if(now->left != nullptr)
             s.push(now->left);
+        if(now->right != nullptr)
+            s.push(now->right);
     }
 }
 

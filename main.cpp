@@ -17,7 +17,7 @@ int main()
     MetroTreeNode* metro_root = read_metro_data();
 
 	travel_map(userMap);
-	travel_map(metroMap);
+	// travel_map(metroMap);
     printf("------user nodes-------\n");
     print_node(user_root);
     printf("----------metro nodes---------\n");

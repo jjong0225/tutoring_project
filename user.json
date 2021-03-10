@@ -40,5 +40,41 @@
                 "station_name" : "을지로3가"
             }
         ]
+    },
+    {
+        "name" : "와하우",
+        "station_name" : "사당",
+        "schedule_list" : [
+            {
+                "name" : "수업",
+                "start_time" : 1500,
+                "end_time" : 1700,
+                "station_name" : "을지로3가"
+            }
+        ]
+    },
+    {
+        "name" : "되나",
+        "station_name" : "사당",
+        "schedule_list" : [
+            {
+                "name" : "수업",
+                "start_time" : 1500,
+                "end_time" : 1700,
+                "station_name" : "을지로3가"
+            }
+        ]
+    },
+    {
+        "name" : "과연",
+        "station_name" : "사당",
+        "schedule_list" : [
+            {
+                "name" : "수업",
+                "start_time" : 1500,
+                "end_time" : 1700,
+                "station_name" : "을지로3가"
+            }
+        ]
     } 
 ]

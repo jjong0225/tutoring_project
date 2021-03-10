@@ -13,53 +13,62 @@ void insert_node(UserTreeNode *&root, User &userNode)
             User(userNode),
             BLACK, nullptr, nullptr, nullptr
         };
-        list<Schedule>::iterator input = userNode.get_schedule_list().begin();
-        for(int i=0; i< userNode.get_schedule_list().size(); i++){
+        list<Schedule> input_list = userNode.get_schedule_list();
+        list<Schedule>::iterator input = input_list.begin();
+        for(int i=0; i< input_list.size(); i++){
             root->data.insert_schedule(*input);
+            input++;
         }
         return;
     }
     else{
+        int user_id = userNode.get_id();
         while (true)
         {
             UserTreeNode * tmpNode = this_node;
-            if(this_node->data.get_id() < userNode.get_id() && this_node->right == nullptr)//루트노드 id 보다 크고 right가 null이면
+            int this_id = this_node->data.get_id();
+            int flag = 0;
+            if(this_id < user_id)//루트노드 id 보다 크면
             {
-                this_node->right = new UserTreeNode
+                if(this_node->right != nullptr)
+                    this_node = this_node->right;
+                else
+                    flag = 1;
+            }
+            else if(this_id > user_id)//루트노드 id 보다 작으면
+            {
+                if(this_node->left != nullptr)
+                    this_node = this_node->left;
+                else
+                    flag = 2;
+            }
+
+            if(flag != 0)
+            {
+                UserTreeNode * new_node = new UserTreeNode
                 {
                     User(userNode),
                     RED, nullptr, nullptr, nullptr
                 };
-                this_node = this_node->right;
-                list<Schedule>::iterator input = userNode.get_schedule_list().begin();
-                for(int i=0; i< userNode.get_schedule_list().size(); i++){
-                    this_node->data.insert_schedule(*input);
+                list<Schedule> input_list = userNode.get_schedule_list();
+                list<Schedule>::iterator input = input_list.begin();
+                for(int i=0; i< input_list.size(); i++){
+                    new_node->data.insert_schedule(*input);
+                    input++;
                 }
-                this_node->parent = tmpNode;
-                break;
-            }
-            else if(this_node->data.get_id() > userNode.get_id() && this_node->left == nullptr)//루트노드 id 보다 크고 right가 null이면
-            {
-                this_node->left = new UserTreeNode
+                if(flag == 1)
                 {
-                    User(userNode),
-                    RED, nullptr, nullptr, nullptr
-                };
-                this_node = this_node->left;
-                list<Schedule>::iterator input = userNode.get_schedule_list().begin();
-                for(int i=0; i< userNode.get_schedule_list().size(); i++){
-                    this_node->data.insert_schedule(*input);
+                    this_node -> right = new_node;
+                    new_node -> parent = this_node;
+                    this_node = this_node -> right;
                 }
-                this_node->parent = tmpNode;
+                if(flag == 2)
+                {
+                    this_node -> left = new_node;
+                    new_node -> parent = this_node;
+                    this_node = this_node -> left;
+                }
                 break;
-            }
-            else if(this_node->data.get_id() < userNode.get_id())//루트노드 id 보다 크면
-            {
-                this_node = this_node->right;
-            }
-            else if(this_node->data.get_id() > userNode.get_id())//루트노드 id 보다 작으면
-            {
-                this_node = this_node->left;
             }
         }
     }
@@ -76,124 +85,130 @@ T *uncle(T * node)
 }
 
 template <typename T>
+T *parent(T * node)
+{
+    if(node == NULL)    
+        return NULL;
+    if(node -> parent == NULL)
+        return NULL;
+    return node -> parent;
+}
+
+template <typename T>
+T *grandparent(T * node)
+{
+    T * tmp_node = parent(node);
+    if(tmp_node == NULL) 
+        return NULL;
+    if(tmp_node->parent == NULL)
+        return NULL;
+    return tmp_node->parent;
+}
+
+template <typename T>
+void recoloring(T *&root, T * node)
+{
+    T *now_node, *parent_node, *grand_node, *uncle_node;
+    now_node= node;
+    parent_node = parent(now_node);
+    grand_node = grandparent(now_node);
+    uncle_node = uncle(now_node);
+
+    parent_node->color = BLACK;
+    uncle_node->color = BLACK;
+    grand_node->color = RED;
+    reviseTree(root, grand_node);
+}
+
+template <typename T>
+void rotate_left(T *&root, T * n)
+{
+    T *c, *p;
+    c = n -> right;
+    p = n -> parent;
+    if(c->left != NULL)
+        c->left->parent = n;
+    
+    n->right = c->left;
+    n->parent = c;
+    c->left = n;
+    c->parent = p;
+
+    if (p != NULL) {
+        if (p->left == n)
+            p->left = c;
+        else
+            p->right = c;
+    }    
+    else
+        root = c;
+}
+
+template <typename T>
+void rotate_right(T *&root, T * n)
+{
+    T *c, *p;
+    c = n -> left;
+    p = n -> parent;
+    if(c->right != NULL)
+        c->right->parent = n;
+    
+    n->left = c->right;
+    n->parent = c;
+    c->right = n;
+    c->parent = p;
+
+    if (p != NULL) {
+        if (p->right == n)
+            p->right = c;
+        else
+            p->left = c;
+    }    
+    else
+        root = c;
+}
+
+template <typename T>
 void reviseTree(T *&root, T *node)
 {
     //부모 노드가 레드인데, 부모님의 형제가 없거나 블랙일 때 - 회전
     //부모 노드가 레드인데, 부모님의 형제가 레드일 때 - 색상 변환
-    T *now, *parent, *grand;
-    now= node;
-    parent= node->parent;
-    grand= node->parent->parent;
-    while (true)
+    if(node->parent == NULL)
     {
-        if(now->parent->parent == nullptr || now->parent == nullptr) break;
-        if(now->color == RED && now->parent->color==RED && (uncle(now)==nullptr || uncle(now)->color==BLACK))
-        {//회전 
-            if(now->data.get_id() > now->parent->data.get_id())
-            {
-                if(grand->data.get_id() > parent->data.get_id())
-                {
-                    grand->left= now;
-                    now->parent= parent;
-                    if (now->left != nullptr)
-                    {
-                        now->left->parent = parent;
-                    }
-                    parent->right = now->left;
-                    now->left= parent;
-                    parent->parent= now;
-                }
-                else if(grand->data.get_id() < parent->data.get_id())
-                {
-                    parent->color= BLACK;
-                    grand->color= RED;
-                    if(grand->parent == nullptr)
-                    {
-                        parent->parent = nullptr;
-                        root = parent;
-                    }
-                    else{
-                        if(grand->parent->right != nullptr && grand->data.get_id() > grand->parent->data.get_id())
-                            grand->parent->right= parent;
-                        else if(grand->parent->left != nullptr && grand->data.get_id() < grand->parent->data.get_id())
-                            grand->parent->left= parent;
-                        parent->parent= grand->parent;
-                    }
-                    grand->right= parent->left;
-                    if(parent->left!=nullptr)
-                        parent->left->parent= grand;
-                    grand->parent = parent;
-                    parent->left = grand;
-                }
-                now=parent;
-                parent=now->parent;
-                grand=parent->parent;
-            }
-            else if(now->data.get_id()==now->parent->left->data.get_id())
-            {
-                if(grand->data.get_id() > parent->data.get_id())
-                {
-                    parent->color= BLACK;
-                    grand->color= RED;
-                    if(grand->parent == nullptr)
-                    {
-                        parent->parent = nullptr;
-                        root = parent;
-                    }
-                    else{
-                        if(grand->parent->right != nullptr && grand->data.get_id() > grand->parent->data.get_id())
-                            grand->parent->right= parent;
-                        else if(grand->parent->left != nullptr && grand->data.get_id() < grand->parent->data.get_id())
-                            grand->parent->left= parent;
-                        parent->parent= grand->parent;
-                    }
-                    grand->left= parent->right;
-                    if(parent->right != nullptr)
-                    {
-                        parent->right->parent= grand;
-                    }
-                    grand->parent= parent;
-                    parent->right= grand;
-                }
-                else if(grand->data.get_id() < parent->data.get_id())//
-                {
-                    parent->color= BLACK;
-                    grand->color= RED;
-                    if(grand->parent == nullptr)
-                    {
-                        parent->parent = nullptr;
-                        root = parent;
-                    }
-                    else{
-                        if(grand->parent->right != nullptr && grand->data.get_id() > grand->parent->data.get_id())
-                            grand->parent->right= parent;
-                        else if(grand->parent->left != nullptr && grand->data.get_id() < grand->parent->data.get_id())
-                            grand->parent->left= parent;
-                        parent->parent= grand->parent;
-                    }
-                    grand->right= now;
-                    now->parent= grand;
-                    grand->parent= parent;
-                    parent->left= grand;
-                }
-                break;
-            }
-        }
-        else if(now->color == RED && now->parent->color==RED && uncle(now)->color==RED)
-        {//색상변환
-            now->parent->color=BLACK;
-            uncle(now)->color=BLACK;
-            if(now->parent->parent->parent != nullptr)//조부모가 루트가 아닐 때
-                now->parent->parent->color = RED;
-            now=now->parent;
-            parent=now->parent;
-            grand=parent->parent;
-            break;
-        }
-        else
+        node -> color = BLACK;
+        return;
+    }
+    if(node->parent->color == BLACK)
+        return;
+ 
+    T *now_node, *parent_node, *grand_node, *uncle_node;
+    now_node= node;
+    parent_node = parent(now_node);
+    grand_node = grandparent(now_node);
+    uncle_node = uncle(now_node);
+
+    if(uncle_node != NULL && uncle_node->color == RED)
+        recoloring(root, now_node);
+    else
+    {
+        if(now_node == parent_node->right && parent_node == grand_node->left)
         {
-            break;
+            rotate_left(root, parent_node);
+            now_node = now_node -> left;
         }
+        else if(now_node == parent_node->left && parent_node == grand_node->right)
+        {
+            rotate_right(root, parent_node);
+            now_node = now_node -> right;
+        }
+        grand_node = grandparent(now_node);
+        parent_node = parent(now_node);
+        parent_node->color = BLACK;
+        grand_node->color = RED;
+        if(now_node == parent_node->left)
+            rotate_right(root, grand_node);
+        else
+            rotate_left(root, grand_node);
     }
 }
 
@@ -216,53 +231,62 @@ void insert_node(MetroTreeNode *&root, Metro &metroNode)
             Metro(metroNode),
             BLACK, nullptr, nullptr, nullptr
         };
-        list<Departure>::iterator input = metroNode.get_departure_list().begin();
-        for(int i=0; i< metroNode.get_departure_list().size(); i++){
+        list<Departure> input_list = metroNode.get_departure_list();
+        list<Departure>::iterator input = input_list.begin();
+        for(int i=0; i< input_list.size(); i++){
             root->data.insert_departure(*input);
+            input++;
         }
-		return;
+        return;
     }
     else{
+        int metro_id = metroNode.get_id();
         while (true)
         {
             MetroTreeNode * tmpNode = this_node;
-            if(this_node->data.get_id() < metroNode.get_id() && this_node->right == nullptr)//루트노드 id 보다 크고 right가 null이면
+            int this_id = this_node->data.get_id();
+            int flag = 0;
+            if(this_id < metro_id)//루트노드 id 보다 크면
             {
-                this_node->right = new MetroTreeNode
+                if(this_node->right != nullptr)
+                    this_node = this_node->right;
+                else
+                    flag = 1;
+            }
+            else if(this_id > metro_id)//루트노드 id 보다 작으면
+            {
+                if(this_node->left != nullptr)
+                    this_node = this_node->left;
+                else
+                    flag = 2;
+            }
+
+            if(flag != 0)
+            {
+                MetroTreeNode * new_node = new MetroTreeNode
                 {
                     Metro(metroNode),
                     RED, nullptr, nullptr, nullptr
                 };
-                this_node = this_node->right;
-                list<Departure>::iterator input = metroNode.get_departure_list().begin();
-                for(int i=0; i< metroNode.get_departure_list().size(); i++){
-                    this_node->data.insert_departure(*input);
+                list<Departure> input_list = metroNode.get_departure_list();
+                list<Departure>::iterator input = input_list.begin();
+                for(int i=0; i< input_list.size(); i++){
+                    new_node->data.insert_departure(*input);
+                    input++;
                 }
-                this_node->parent = tmpNode;
-                break;
-            }
-            else if(this_node->data.get_id() > metroNode.get_id() && this_node->left == nullptr)//루트노드 id 보다 크고 right가 null이면
-            {
-                this_node->left = new MetroTreeNode
+                if(flag == 1)
                 {
-                    Metro(metroNode),
-                    RED, nullptr, nullptr, nullptr
-                };
-                this_node = this_node->left;
-                list<Departure>::iterator input = metroNode.get_departure_list().begin();
-                for(int i=0; i< metroNode.get_departure_list().size(); i++){
-                    this_node->data.insert_departure(*input);
+                    this_node -> right = new_node;
+                    new_node -> parent = this_node;
+                    this_node = this_node -> right;
                 }
-                this_node->parent = tmpNode;
+                if(flag == 2)
+                {
+                    this_node -> left = new_node;
+                    new_node -> parent = this_node;
+                    this_node = this_node -> left;
+                }
                 break;
-            }
-            else if(this_node->data.get_id() < metroNode.get_id())//루트노드 id 보다 크면
-            {
-                this_node = this_node->right;
-            }
-            else if(this_node->data.get_id() > metroNode.get_id())//루트노드 id 보다 작으면
-            {
-                this_node = this_node->left;
             }
         }
     }

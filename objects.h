@@ -51,13 +51,15 @@ class Departure
 		string station_name;
 		int id;
 		int line;	
-		int departure_time;
+		list<int> departure_time;
+		int time_weight;
 	public:	
-        Departure(string station_name, int line, int departure_time);
+        Departure(string station_name, int line, list<int> departure_time, int time_weight);
 		string get_station_name();
 		int get_id();
 		int get_line();
-		int get_departure_time();
+		list<int> get_departure_time();
+		int get_time_weight();
         void print();
 };
 
