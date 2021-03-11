@@ -16,16 +16,13 @@ int main()
     UserTreeNode* user_root = read_user_data();
     MetroTreeNode* metro_root = read_metro_data();
 
-	travel_map(userMap);
-	// travel_map(metroMap);
     printf("------user nodes-------\n");
     print_node(user_root);
     printf("----------metro nodes---------\n");
     print_node(metro_root);
-	//find_item(userMap, "안종훈");
-	//find_item(metroMap, "고속터미널");
 
-
+	save_user_data(user_root);
+	save_metro_data(metro_root);
 
 //    while(1)
 //    {

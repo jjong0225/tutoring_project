@@ -49,7 +49,7 @@ void print_node(T * root){
     while(!s.empty()){
         T* now = s.front();
         s.pop();
-        printf("id: %d, color: %d", now->data.get_id(), now->color);
+        printf("id: %d, color: %d\n", now->data.get_id(), now->color);
 		now->data.print();
         if(now->parent != NULL)
             printf(" parent_id : %d\n", now->parent->data.get_id());
