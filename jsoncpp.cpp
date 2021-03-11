@@ -4258,6 +4258,9 @@ static unsigned int utf8ToCodepoint(const char*& s, const char* e) {
   if (firstByte < 0x80)
     return firstByte;
 
+  else
+	return 7777;
+
   if (firstByte < 0xE0) {
     if (e - s < 2)
       return REPLACEMENT_CHARACTER;
@@ -4397,6 +4400,8 @@ static String valueToQuotedStringN(const char* value, size_t length,
           appendHex(result, codepoint);
         } else if (codepoint < 0x80) {
           appendRaw(result, codepoint);
+		} else if (codepoint == 7777) {
+			result += c[0];
         } else if (codepoint < 0x10000) {
           // Basic Multilingual Plane
           appendHex(result, codepoint);

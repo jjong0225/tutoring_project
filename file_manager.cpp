@@ -6,14 +6,6 @@
 #include "data_structure.h"
 #include "file_manager.h"
 
-
-/* 
-JSON파일 읽고 User Object들로 만든다. 
-만들고 data_structure에 정의된 함수들을 이용해 tree를 구성한다.
-    (힌트 1. tree가 구현이 잘 되어있고, parsing이 잘 되어있다면 parsing한 object를 insert만 계속 하면 된다 )
-    (힌트 2. Custom tree를 구현하기 전에 STL의 map을 이용하여 미리 구현하면 협업이 쉬울것이다.)
-*/
-
 std::map<int, User> userMap;
 std::map<int, Metro> metroMap;
 
@@ -46,7 +38,6 @@ UserTreeNode* read_user_data()
 			User *userP= &userObj;
 			insert_node(root, *userP);
 			userMap.insert(std::pair<int, User>(userObj.get_id(), userObj));
-			cout << userObj.get_id() << " ";
 		}
 	}
 	else
@@ -96,29 +87,119 @@ MetroTreeNode* read_metro_data()
 	return root;
 }
 
-void save_user_data() {
-	Json::Value root;
+void save_metro_data(MetroTreeNode* root) {
+    queue<MetroTreeNode*> s;
+    s.push(root);
 
-	for(auto pair : userMap) {
-		User userObj = pair.second;
+	ofstream json_file;
+	json_file.open("metro.json");
 
-		Json::Value jsonObj;
+	Json::Value metroData;
+
+    while(!s.empty()){
+        MetroTreeNode* now = s.front();
+        s.pop();
+
+		Json::Value metro;
+
+		metro["station_name"] = now->data.get_station_name();
+
+		Json::Value departure_list;
+
+		for(auto departure : now->data.get_departure_list()) {
+			Json::Value departureObj;			
+
+			departureObj["station_name"] = departure.get_station_name();
+			departureObj["line"] = departure.get_line();
+			departureObj["time_weight"] = departure.get_time_weight();
+
+			Json::Value departure_time_list;
+			
+			for(auto departure_time : departure.get_departure_time()) {
+				departure_time_list.append(departure_time);
+			}
+
+			departureObj["departure_time"] = departure_time_list;
+
+			departure_list.append(departureObj);
+		}
 		
-		
-	}
+		metro["departure_list"] = departure_list;
+		metroData.append(metro);
+
+        if(now->parent != NULL)
+			;
+        else
+			;
+        if(now->left != nullptr)
+            s.push(now->left);
+        if(now->right != nullptr)
+            s.push(now->right);
+    }
+	Json::StreamWriterBuilder builder;
+	builder["commentStyle"] = "None";
+	builder["indentation"] = "    ";
+	unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+
+	writer->write(metroData, &json_file);
+	cout << endl;
+
+	json_file.close();
+
 }
 
-//void save_metro_data(UserTreeNode* rootNode) {
-//	Json::Value root;
-//
-//	for(auto metroPair : userMap) {
-//		User metroObj = metroPair.second;
-//
-//		Json::Value metroValue;
-//		metroValue["station_name"] = metroObj.get_station_code();
-//		
-//		
-//	}
-//}
 
+void save_user_data(UserTreeNode* root) {
+    queue<UserTreeNode*> s;
+    s.push(root);
+
+	ofstream json_file;
+	json_file.open("user.json");
+
+	Json::Value userData;
+
+    while(!s.empty()){
+        UserTreeNode* now = s.front();
+        s.pop();
+
+		Json::Value user;
+
+		user["name"] = now->data.get_name();
+		user["station_name"] = now->data.get_station_name();
+
+		Json::Value schedule_list;
+
+		for(auto schedule : now->data.get_schedule_list()) {
+			Json::Value scheduleObj;			
+
+			scheduleObj["name"] = schedule.get_name();
+			scheduleObj["start_time"] = schedule.get_start_time();
+			scheduleObj["end_time"] = schedule.get_end_time();
+			scheduleObj["station_name"] = schedule.get_station_name();
+
+			schedule_list.append(scheduleObj);
+		}
+		
+		user["schedule_list"] = schedule_list;
+		userData.append(user);
+        if(now->parent != NULL)
+			;
+        else
+			;
+        if(now->left != nullptr)
+            s.push(now->left);
+        if(now->right != nullptr)
+            s.push(now->right);
+    }
+	Json::StreamWriterBuilder builder;
+	builder["commentStyle"] = "None";
+	builder["indentation"] = "    ";
+	unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+
+	writer->write(userData, &json_file);
+	cout << endl;
+
+	json_file.close();
+
+}
 
