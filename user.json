@@ -13,19 +13,6 @@
         "station_name" : "종각"
     },
     {
-        "name" : "박상욱",
-        "schedule_list" : 
-        [
-            {
-                "end_time" : 1700,
-                "name" : "수업",
-                "start_time" : 1500,
-                "station_name" : "을지로3가"
-            }
-        ],
-        "station_name" : "사당"
-    },
-    {
         "name" : "안종훈",
         "schedule_list" : 
         [
@@ -43,5 +30,18 @@
             }
         ],
         "station_name" : "서울역"
+    },
+    {
+        "name" : "박상욱",
+        "schedule_list" : 
+        [
+            {
+                "end_time" : 1700,
+                "name" : "수업",
+                "start_time" : 1500,
+                "station_name" : "을지로3가"
+            }
+        ],
+        "station_name" : "사당"
     }
 ]

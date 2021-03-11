@@ -17,14 +17,14 @@ int main()
     UserTreeNode* user_root = read_user_data();
     MetroTreeNode* metro_root = read_metro_data();
 
-    printf("------user nodes-------\n");
-    print_node(user_root);
-    printf("----------metro nodes---------\n");
-    print_node(metro_root);
+//    printf("------user nodes-------\n");
+//    print_node(user_root);
+//    printf("----------metro nodes---------\n");
+//    print_node(metro_root);
 
-	save_user_data(user_root);
-	save_metro_data(metro_root);
-
+//	save_user_data(user_root);
+//	save_metro_data(metro_root);
+//
     
     //Algorithm 
    

@@ -159,9 +159,9 @@ pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, ma
     
     int past_rail=get<1>(path[node_id]);
     MetroTreeNode * temp=search(r,node_id);
-    if(temp==NULL){"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
+    if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
     st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+" line)");
-    if(get<2>(path[node_id])==INF){"TRACK PATH CAN'T VISITED NODE"; exit(1);}
+    if(get<2>(path[node_id])==INF){cout<<"TRACK PATH CAN'T VISITED NODE"; exit(1);}
     min_path.push_back(make_pair(node_id,(get<2>(path[node_id]))));  
 
     while(1){
@@ -175,13 +175,13 @@ pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, ma
       
         if(node_id==departure_id){  // 출발지점에 도착함
             temp=search(r,node_id);
-             if(temp==NULL){"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
+             if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
             st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+" line)");
             min_path.push_back(make_pair(node_id,get<2>(path[node_id])));          
             break;}
         else{
               temp=search(r,node_id);
-               if(temp==NULL){"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
+               if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
               st_path.push(temp->data.get_station_name()+"("+to_string(get<1>(path[node_id]))+" line)");
               min_path.push_back(make_pair(node_id,get<2>(path[node_id]))); }                     
     }
@@ -270,7 +270,7 @@ pair<map<int,int>, map <int,tuple<int,int,int>>> trans_dijkstra(int departure_id
    map<int,Node> ::iterator it_new=Node_map.begin();
    int cnt=0;
    MetroTreeNode * k=search(r,departure_id);
-   if(k==NULL){"DIJKSTRA ERROR CAN'T FIND NODE"; exit(1); }
+   if(k==NULL){cout<<"DIJKSTRA ERROR CAN'T FIND NODE"; exit(1); }
 
    for(int i=1;i<=station_num;i++){  // travel 하면서 모든 노드를 초기화 해야함   
        int id= it_new->second.station_id; 
