@@ -43,6 +43,10 @@ class User
         void insert_schedule(Schedule schedule);
         string find_optimized_schedule_path();
         void print();
+		void print_schedule();
+		void change_name(string);
+		void delete_schedule(int);
+		void change_station_name(string);
 };
 
 class Departure
