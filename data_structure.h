@@ -76,10 +76,19 @@ void delete_node(MetroTreeNode *root, int key);
 
 
 
+
 // 3. 역간의 연결을 표현하는 Graph
+typedef struct node_info{
+    int time_weight;
+    int line_num;
+    vector<int> departure_data;
+}Node_Info;
+
 typedef struct node
 {
     int station_id;
-    vector<pair<struct node *, int>>station_ptr; // (연결된 역, 걸리는 시간) 쌍의 벡터
+    vector<pair<struct node*,Node_Info>>station_ptr; // (연결된 역, [걸리는 시간,호선,출발시간] 쌍의 벡터
 } Node;
+
+
 #endif
