@@ -84,6 +84,34 @@ void User::print()
 		schedule.print();
 	}
 }           
+void User::print_schedule()
+{
+	int i=1;
+	for(Schedule schedule : schedule_list) {
+		cout << "\nSchedule #" << i << '\n';
+		cout << "일정 : " << schedule.get_name() << '\n';
+		printf("일정 시작 시간 : %d시 %02d분\n", schedule.get_start_time()/100, schedule.get_start_time()%100);
+		printf("일정 시작 시간 : %d시 %02d분\n", schedule.get_end_time()/100, schedule.get_end_time()%100);
+		cout << "역 이름 : " << schedule.get_station_name() << '\n';
+		i++;
+	}
+}
+void User::change_name(string new_name)
+{
+	this -> name = new_name;
+	this -> id = hash<string>{}(new_name);
+}
+void User::delete_schedule(int index)
+{
+	list<Schedule>::iterator it;
+	it = schedule_list.begin();
+	advance(it, index-1);
+	this -> schedule_list.erase(it);
+}
+void User::change_station_name(string new_name)
+{
+	this -> station_name = new_name;
+}
 
 // Metro Class
 
