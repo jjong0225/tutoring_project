@@ -47,8 +47,8 @@ int main()
         int sub_command, subb_command;
         string name, name1, fname, rmname, cname, cstation;
         string station, station1;
-        int time1, time2, savec, station2, redata, fdata, rmschedule; //station2는 Metro입력시
-        bool savecheck = true;
+        int time1, time2, savec, station2, redata, fdata, rmschedule, fstation; //station2는 Metro입력시
+        bool savecheck = 0;
         cout << "========================================================="<< endl;
         cout << "안녕하세요 지하철 스케줄 관리 프로그램에 오신걸 환영합니다!" << endl;
         cout<< "1. 유저 데이터 관리"<< endl;
@@ -85,7 +85,7 @@ int main()
                             user1.insert_schedule(schedule1);
                             insert_node(user_root, user1);
                             cout << "유저의 id는 " << user1.get_id() <<"입니다."<< endl;
-                            savecheck = false;
+                            savecheck = 1;
                             
                             break;
                         }
@@ -160,7 +160,7 @@ int main()
                             cout << "삭제하려는  유저의 이름은 무엇입니까?"<< endl;
                             cin >> rmname;
                             delete_node(user_root, hash<string>{}(rmname));
-                            savecheck = false;
+                            savecheck = 1;
                             break;
                         }
                     }
@@ -169,7 +169,9 @@ int main()
             }
             
             case 2:
-            {  while(sub_command !=2){
+            {  
+                init_graph(metro_root);
+                while(sub_command !=2){
                     cout << "========================================================="<< endl;
                     cout << "오늘 스케줄을 확인해보세요!" << endl;
                     cout<<"1. 스테줄 보기"<< endl;
@@ -179,11 +181,27 @@ int main()
                     switch(sub_command){
                         case 1:
                         {
+                            
                             cout << "보고 싶은 유저의 이름을 입력해주세요!" << endl;
                             cin >> fname;
+                        
                             UserTreeNode *user3 = search(user_root, hash<string>{}(fname));
-
+                            MetroTreeNode* metro1 = search(metro_root, hash<string>{}(user3->data.get_station_name()));
+                            fstation = metro1->data.get_id();
+                            for(Schedule schedule : user3->data.get_schedule_list()) {
+		                        tuple<string,Track_info,Track_info> schedule_result= find_optimized_schedule_path(fstation,schedule.get_id(), schedule.get_start_time(), schedule.get_end_time());
+                                if(get<0>(schedule_result)!=" ") {
+                                    printf("----------------Optimize Schedules---------------\n\n");    
+                                    cout<<get<0>(schedule_result)<<endl;
+                                    printf("----------Mininmum estimated arrival time Path----------\n");
+                                    search_optimize_schedule(get<1>(schedule_result).path_list,get<1>(schedule_result).departure_time); // 최소 소요 시간 track
+                                    printf("\n-------------Maximum departure time Path-------------\n");
+                                    search_optimize_schedule(get<2>(schedule_result).path_list,get<2>(schedule_result).departure_time); // 최대 출발 track
+                                }
+                                fstation = schedule.get_id();
+                            
                         }
+                            cout << "오늘 스케줄이 끝났습니다." << endl;
                     }
                 }
                 break;
@@ -191,14 +209,14 @@ int main()
 
         
             case 3: {
-                if(savecheck ==false){
+                if(savecheck){
                     cout << "-------------------------------------------------" <<endl;
                     cout << "변경사항을 저장하시겠습니까? 1. 저장 2. 저장하지않음"<< endl;
                     cin>> savec;
                     if(savec == 2){
                         save_metro_data(metro_root);
                         save_user_data(user_root);
-                        savecheck = true;
+                        savecheck = 0;
                         cout << "저장했습니다"<< endl;
 
                     }
