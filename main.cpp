@@ -13,6 +13,7 @@ Node STATION_NODE[NUM_OF_STATION] = {0};
 
 int main()
 {
+    int command = 0;
     // 파일 읽는 부분
     UserTreeNode* user_root = read_user_data();
     MetroTreeNode* metro_root = read_metro_data();
@@ -41,16 +42,168 @@ int main()
     } 
 
 
-//    while(1)
-//    {
-//        string command;
-//        cin >> command;
-//        if(command == "4")
-//            break;
-//        else
-//        {
-//            // do something
-//        }
-//    }
+    while(command != 3)
+    {
+        int sub_command, subb_command;
+        string name, name1, fname, rmname, cname, cstation;
+        string station, station1;
+        int time1, time2, savec, station2, redata, fdata, rmschedule; //station2는 Metro입력시
+        bool savecheck = true;
+        cout << "========================================================="<< endl;
+        cout << "안녕하세요 지하철 스케줄 관리 프로그램에 오신걸 환영합니다!" << endl;
+        cout<< "1. 유저 데이터 관리"<< endl;
+        cout<< "2. 스케줄 관리"<< endl;
+        cout<< "3. 프로그램 종료"<< endl;
+        cin >> command;
+
+    
+        switch (command)
+        {
+            case 1:{
+                while(sub_command != 5){
+                    cout << "========================================================="<< endl;
+                    cout << "유저 데이터 관리에 오신걸 환영합니다" <<endl;
+                    cout<< "1. 유저 데이터 추가" << endl;
+                    cout<< "2. 유저 데이터 찾기"<< endl;
+                    cout<< "3. 유저 데이터 수정"<< endl;
+                    cout<< "4. 유저 데이터 삭제"<< endl;
+                    cout<< "5. 뒤로가기" <<endl;
+                    cin >> sub_command;
+                    switch(sub_command){ 
+                        case 1:{
+                            cout << "========================================================="<< endl;
+                            cout <<"추가하려는 유저은 이름은 무엇입니까?"<< endl;
+                            cin>> name;
+                            cout <<"유저의 출발 역은 어디입니까?"<< endl;
+                            cin >> station;
+                            cout << "유저의 스케줄을 알려주세요"<< endl;
+                            cout << "스케줄이름 시작시간 종료시간 도착역은?"<< endl;
+                            cin >> name1 >> time1 >> time2 >>station;
+
+                            User user1 = User(name, station);
+                            Schedule schedule1 = Schedule(name1, time1, time2, station);
+                            user1.insert_schedule(schedule1);
+                            insert_node(user_root, user1);
+                            cout << "유저의 id는 " << user1.get_id() <<"입니다."<< endl;
+                            savecheck = false;
+                            
+                            break;
+                        }
+                        case 2:{
+                            cout <<"찾고싶은 유저의 이름을 입력하세요"<< endl;
+                            cin >> fname;
+                            UserTreeNode *user2 = search(user_root, hash<string>{}(fname));
+                            cout << "유저정보"<< endl;
+                            user2->data.print();
+                            break;
+                        }
+                        case 3:{
+                            while(subb_command != 5){
+                                cout << "-------------------------------------------------" <<endl;
+                                cout << "수정할 유저의 이름을 입력하세요!" << endl;
+                                cin >> fname;
+                                UserTreeNode *user2 = search(user_root, hash<string>{}(fname));
+                                cout << "========================================================="<< endl;
+                                cout << user2->data.get_name() <<"님의 어떤 정보를 수정하시겠습니까?"<<endl;
+                                cout << "1. 유저 이름 수정"<< endl;
+                                cout << "2. 출발역 수정" <<endl;
+                                cout << "3. 스케줄 추가" <<endl;
+                                cout << "4. 스케줄 삭제" <<endl;
+                                cout << "5. 뒤로가기" <<endl;
+                                cin >> subb_command;
+                                cout << "-------------------------------------------------" <<endl;
+                                switch (subb_command)
+                                {
+                                    case 1 :
+                                    {
+                                        cout << "바꿀 새로운 유저 이름을 입력해주세요" << endl;
+                                        cin >> cname;
+                                        user2->data.change_name(cname);
+                                        cout << "유저 이름이" << user2->data.get_name() <<"으로 바뀌었습니다."<< endl;
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        cout << "출발역을 어느역으로 바꾸시겠습니까? 바꿀 역이름을 입력해주세요" << endl;
+                                        cin >> cstation;
+                                        user2->data.change_station_name(cstation);
+                                        break;
+                                    
+                                    }
+                                    case 3:
+                                    {
+                                        cout << "추가하고 싶은 스케줄을 입력해주세요!" <<endl;
+                                        cout << "스케줄이름 시작시간 종료시간 도착역은?"<< endl;
+                                        cin >> name1 >> time1 >> time2 >>station;
+                                        Schedule schedule2 = Schedule(name1, time1, time2, station);
+                                        user2->data.insert_schedule(schedule2);
+
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        cout << "오늘" << user2->data.get_name() << "님의 일정입니다." << endl;
+                                        user2->data.print_schedule();
+                                        cout << "몇번째 일정을 삭제하시겠습니까?" << endl;
+                                        cin >> rmschedule;
+                                        user2->data.delete_schedule(rmschedule - 1);
+                                        cout << "일정을 삭제하였습니다." << endl;
+                    
+                                        break;
+                                    }
+                                }
+
+                            }
+                            break;
+                        }
+                        case 4:{
+                            cout << "삭제하려는  유저의 이름은 무엇입니까?"<< endl;
+                            cin >> rmname;
+                            delete_node(user_root, hash<string>{}(rmname));
+                            savecheck = false;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+            
+            case 2:
+            {  while(sub_command !=2){
+                    cout << "========================================================="<< endl;
+                    cout << "오늘 스케줄을 확인해보세요!" << endl;
+                    cout<<"1. 스테줄 보기"<< endl;
+                    cout<<"2. 뒤로가기"<< endl;
+                    cin>> sub_command;
+
+                    switch(sub_command){
+                        case 1:
+                        {
+                            cout << "보고 싶은 유저의 이름을 입력해주세요!" << endl;
+                            cin >> fname;
+                            UserTreeNode *user3 = search(user_root, hash<string>{}(fname));
+
+                        }
+                    }
+                }
+                break;
+            }
+
+        
+            case 3: {
+                if(savecheck ==false){
+                    cout << "-------------------------------------------------" <<endl;
+                    cout << "변경사항을 저장하시겠습니까? 1. 저장 2. 저장하지않음"<< endl;
+                    cin>> savec;
+                    if(savec == 2){
+                        save_metro_data(metro_root);
+                        save_user_data(user_root);
+                        savecheck = true;
+                        cout << "저장했습니다"<< endl;
+
+                    }
+                }
+            }
+    }
     return 0;
 }
