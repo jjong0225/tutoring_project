@@ -148,7 +148,7 @@ int main()
                                         user2->data.print_schedule();
                                         cout << "몇번째 일정을 삭제하시겠습니까?" << endl;
                                         cin >> rmschedule;
-                                        user2->data.delete_schedule(rmschedule - 1);
+                                        user2->data.delete_schedule(rmschedule);
                                         cout << "일정을 삭제하였습니다." << endl;
                     					savecheck = 1;
                                         break;
