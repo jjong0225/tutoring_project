@@ -47,7 +47,7 @@ int main()
     {
         int sub_command, subb_command;
         string name, name1, fname, rmname, cname, cstation;
-        string station, station1;
+        string station, station1, station3;
         int time1, time2, savec, station2, redata, fdata, rmschedule, fstation; //station2는 Metro입력시
         cout << "========================================================="<< endl;
         cout << "안녕하세요 지하철 스케줄 관리 프로그램에 오신걸 환영합니다!" << endl;
@@ -78,10 +78,10 @@ int main()
                             cin >> station;
                             cout << "유저의 스케줄을 알려주세요"<< endl;
                             cout << "스케줄이름 시작시간 종료시간 도착역은?"<< endl;
-                            cin >> name1 >> time1 >> time2 >>station;
+                            cin >> name1 >> time1 >> time2 >>station3;
 
                             User user1 = User(name, station);
-                            Schedule schedule1 = Schedule(name1, time1, time2, station);
+                            Schedule schedule1 = Schedule(name1, time1, time2, station3);
                             user1.insert_schedule(schedule1);
                             insert_node(user_root, user1);
                             cout << "유저의 id는 " << user1.get_id() <<"입니다."<< endl;
