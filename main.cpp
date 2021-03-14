@@ -214,7 +214,6 @@ int main()
                     cout << "변경사항을 저장하시겠습니까? 1. 저장 2. 저장하지않음"<< endl;
                     cin>> savec;
                     if(savec == 2){
-                        save_metro_data(metro_root);
                         save_user_data(user_root);
                         savecheck = 0;
                         cout << "저장했습니다"<< endl;
