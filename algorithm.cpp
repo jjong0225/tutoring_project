@@ -90,7 +90,7 @@ void init_graph(MetroTreeNode * root_ptr){
             q.push(n->right);
             node_cnt++;
             };
-    } //tree�� ��ȸ�ϸ� station node �ʱ�ȭ  �� ����
+    } 
 
      station_num=node_cnt;
 	 it_node=Node_map.begin();	
@@ -106,12 +106,12 @@ void init_graph(MetroTreeNode * root_ptr){
 		for(int i=0;i<list_size;++i){
 			Departure cur=*it;
             int nex_id=cur.get_id();
-             int nex_weight=cur.get_time_weight();  //10���� ���� �ʱ�ȭ��
+             int nex_weight=cur.get_time_weight();  
             int nex_line=cur.get_line();       
             it_node=Node_map.find(nex_id);
             Node newtemp;
 
-            if(it_node ==Node_map.end()){ //����� ���� �� (Ʈ���� �������� ���� ��)             
+            if(it_node ==Node_map.end()){         
                 newtemp.station_id=nex_id;               
                 cout<<"NEW STATION TREE NODE"<<newtemp.station_id<<endl;
 		        Node_map.insert(make_pair(newtemp.station_id,newtemp));
@@ -144,7 +144,7 @@ void init_graph(MetroTreeNode * root_ptr){
             q.push(n->left); }
         if(n->right!=nullptr){
             q.push(n->right); };
-    } //tree�� ��ȸ�ϸ� station node �ʱ�ȭ  �� ����
+    } 
 	
 }
 
@@ -153,7 +153,7 @@ void init_graph(MetroTreeNode * root_ptr){
 pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, map<int ,tuple<int,int,int>> path){ 
      
     int node_id=arrive_id;
-    vector<pair<int,int>> min_path; // ������ ��ȣ�� �����ϴ� ����
+    vector<pair<int,int>> min_path; 
     stack<string> st_path;
     string path_Str="";
     
@@ -165,15 +165,15 @@ pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, ma
     min_path.push_back(make_pair(node_id,(get<2>(path[node_id]))));  
 
     while(1){
-        node_id=get<0>(path[node_id]); // ������ ��ȣ     
-        int newrail=get<1>(path[node_id]); // �뼱 ����       
-        if(past_rail!=newrail &&node_id!=departure_id){ // ���� �뼱 ������ ���� ���� �뼱 ������ �ٸ� ��
+        node_id=get<0>(path[node_id]);    
+        int newrail=get<1>(path[node_id]);     
+        if(past_rail!=newrail &&node_id!=departure_id){ 
             st_path.push("("+to_string(newrail)+"->"+to_string(past_rail)+" 환승) ");           
-            past_rail=newrail; // �뼱���� ������Ʈ
+            past_rail=newrail;
             min_path.push_back(make_pair(0,(get<2>(path[node_id]))));
         }
       
-        if(node_id==departure_id){  // ��������� ������
+        if(node_id==departure_id){ 
             temp=search(r,node_id);
              if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
             st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+"호선)");
@@ -186,7 +186,7 @@ pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, ma
               min_path.push_back(make_pair(node_id,get<2>(path[node_id]))); }                     
     }
 
-    reverse(min_path.begin(),min_path.end()); // �������̱� ������ reverse
+    reverse(min_path.begin(),min_path.end());
     
     while(!st_path.empty()){
         string cur= st_path.top();
@@ -237,10 +237,10 @@ pair<int,int> find_min_path(int present_station,int next_station,int start_time,
        for(int j=0;j<it->second.station_ptr[i].second.departure_data.size();j++){    
        if( cur.second.departure_data[j] >=start_time && min_departure>cur.second.departure_data[j])
         { int param=cur.second.departure_data[j];
-           if( param/100>start_time/100) //���ڸ��� �� Ŭ�� (�� ������)
+           if( param/100>start_time/100) 
                     param=cal_time(cur.second.departure_data[j]);
            wait_time=param-start_time;
-           min_departure=cur.second.departure_data[j];} // ���� ������ ������ �� ���� ������ ���              
+           min_departure=cur.second.departure_data[j];}             
              } 
         }
    }
@@ -266,32 +266,32 @@ pair<map<int,int>, map <int,tuple<int,int,int>>> trans_dijkstra(int departure_id
  
    priority_queue <tuple<int,int, int>,vector<tuple<int,int, int>>,greater<tuple<int,int,int>>> q;
    map <int, int> dist;
-   map<int,tuple<int,int,int>> path; //������,�뼱, �ҿ�ð�  
+   map<int,tuple<int,int,int>> path; 
    map<int,Node> ::iterator it_new=Node_map.begin();
    int cnt=0;
    MetroTreeNode * k=search(r,departure_id);
    if(k==NULL){cout<<"DIJKSTRA ERROR CAN'T FIND NODE"; exit(1); }
 
-   for(int i=1;i<=station_num;i++){  // travel �ϸ鼭 ��� ��带 �ʱ�ȭ �ؾ���   
+   for(int i=1;i<=station_num;i++){ 
        int id= it_new->second.station_id; 
-       dist.insert(make_pair(id,INF));  // KEY: ID Value: �ҿ�ð�
-       path.insert(make_pair(id,make_tuple(-1,-1,-1))); //KEY: ID , VALUE (���� �� id, line, time)
+       dist.insert(make_pair(id,INF)); 
+       path.insert(make_pair(id,make_tuple(-1,-1,-1))); 
        cnt++;
        it_new++;
    }
 
    dist[departure_id]=0; 
-   q.push(make_tuple(0,departure_id,0)); // �������� ó������ �켱���� ť�� �߰�
+   q.push(make_tuple(0,departure_id,0)); 
   
-   int start_time=time; // ���� �ð� �Է�
+   int start_time=time; 
    int j=0;
    int here_rail=0;
  
     while (!q.empty())
     {
-        // �켱���� ť�� ���� ����ġ�� �� ������ ������ �ٲپ��ش�.
-        int cost =get<0>(q.top()); //����ġ
-        int here =get<1>(q.top());// ������ id
+      
+        int cost =get<0>(q.top()); 
+        int here =get<1>(q.top());
         int rail_num=get<2>(q.top());//line
        
         int save=0;     
@@ -322,7 +322,7 @@ pair<map<int,int>, map <int,tuple<int,int,int>>> trans_dijkstra(int departure_id
 
            if(departure_id==here) here_rail=there_rail;
 
-            if( there_rail!=rail_num ){  // ȯ������
+            if( there_rail!=rail_num ){ 
                 it=dist.find(here);
                 if(it!=dist.end()){
                 int move_time=(it->second);
@@ -343,7 +343,7 @@ pair<map<int,int>, map <int,tuple<int,int,int>>> trans_dijkstra(int departure_id
         }
     }
   
-    return make_pair(dist,path); // �� �����忡 ���� �ּ� �ҿ� �ð� ��ȯ
+    return make_pair(dist,path); 
 }
 
 int transfer_num(vector<pair<int,int>>Track){
@@ -386,7 +386,7 @@ void search_optimize_schedule(vector<pair<int,int>> search_line, int departure_t
 
 int find_fair_station(map<int,int>a, map<int,int>b){
   
-    pair<int,int> min_node=make_pair(0xfffff,0); // ������ , �뼱�� 
+    pair<int,int> min_node=make_pair(0xfffff,0);
     int size=a.size();
     map<int, int> :: iterator it_a=a.begin();
     map<int, int> :: iterator it_b=b.begin();
@@ -419,7 +419,7 @@ pair<int, pair<string,vector<pair<int,int>>>>find_max_departure_time(int A_stati
     pair<string,vector<pair<int,int>>> track_optimize_path;
     int tot=0;
     int before=0;
-    pair<int,int> gap=make_pair(0,0); // ��� �ð�, ��� �ð�
+    pair<int,int> gap=make_pair(0,0); 
 	it_node=Node_map.find(A_station_id);
 	vector<pair<node*,node_info>> start_node=it_node->second.station_ptr;
 	int size=start_node.size();
@@ -453,8 +453,8 @@ pair<int, pair<string,vector<pair<int,int>>>>find_max_departure_time(int A_stati
 tuple<string,Track_info,Track_info> find_optimized_schedule_path(int A_station, int B_station,int end_schedule_time, int next_schedule_time){
  
     
-    int estimated_departure=end_schedule_time; // ��� �ð� ����
-    int estimated_arrive=next_schedule_time; // ���� ���� �ð� ���� (���� ������ ���� �ð����� ���� ����)
+    int estimated_departure=end_schedule_time; 
+    int estimated_arrive=next_schedule_time;
     
      MetroTreeNode * A_NODE=search(r,A_station );
      MetroTreeNode * B_NODE=search(r,B_station );
@@ -476,7 +476,7 @@ tuple<string,Track_info,Track_info> find_optimized_schedule_path(int A_station, 
     string schedule_transfer_num_str="환승 횟수 : "+to_string(transfer_num(get<1>(track_optimize_path)))+'\n';
     string schedule_Path_str="Path : "+get<0>(track_optimize_path)+'\n';
     
-    int min_arrive_time= track_optimize_path.second[destination].second + estimated_departure ;// ��� �ð�+ �ִ� �ð� ����� �ð�
+    int min_arrive_time= track_optimize_path.second[destination].second + estimated_departure ;
     string min_arrive_time_str="최소 도착 시간 : "+print_HHMM(convert_time(min_arrive_time))+'\n';
      
     pair<int, pair<string,vector<pair<int,int>>>> max_time= find_max_departure_time(A_station,B_station,estimated_departure,estimated_arrive); 
