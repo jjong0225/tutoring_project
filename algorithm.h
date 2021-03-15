@@ -18,7 +18,7 @@ typedef struct track_info{
     int departure_time;
 
 }Track_info;
-
+UserTreeNode * login(UserTreeNode *root, string username, string password);
 void init_graph( MetroTreeNode * root_ptr);
 string convert_time(int time);
 int min_to_hour(int time);

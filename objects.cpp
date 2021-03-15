@@ -91,7 +91,7 @@ void User::print_schedule()
 		cout << "\nSchedule #" << i << '\n';
 		cout << "일정 : " << schedule.get_name() << '\n';
 		printf("일정 시작 시간 : %d시 %02d분\n", schedule.get_start_time()/100, schedule.get_start_time()%100);
-		printf("일정 시작 시간 : %d시 %02d분\n", schedule.get_end_time()/100, schedule.get_end_time()%100);
+		printf("일정 종료 시간 : %d시 %02d분\n", schedule.get_end_time()/100, schedule.get_end_time()%100);
 		cout << "역 이름 : " << schedule.get_station_name() << '\n';
 		i++;
 	}
@@ -111,6 +111,12 @@ void User::delete_schedule(int index)
 void User::change_station_name(string new_name)
 {
 	this -> station_name = new_name;
+}
+bool User::check_password(string pw)
+{
+	if(hash<string>{}(pw) == this->password)
+		return true;
+	else return false;
 }
 
 // Metro Class

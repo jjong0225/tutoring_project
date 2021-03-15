@@ -231,7 +231,7 @@ int main()
                                 fstation=hash<string>{}(cur.get_station_name());
                                 now_time=cur.get_end_time();
                                 }
-							 }./
+							}
                             cout << "오늘 스케줄이 끝났습니다." << endl;
 							break;
                     	}

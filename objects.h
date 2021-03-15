@@ -33,6 +33,7 @@ class User
         string station_name; // 유저의 역, 스케쥴의 언제나 맨 처음이고 언제나 맨 마지막이다. 변하면 안됨
         int id; // 유저 아이디
         list<Schedule> schedule_list; // 스케쥴의 백터
+		int password;
     public :
         User(string param_string, string param_main_station_code);
         User(const User &copy_user);
@@ -47,6 +48,7 @@ class User
 		void change_name(string);
 		void delete_schedule(int);
 		void change_station_name(string);
+		bool check_password(string);
 };
 
 class Departure
