@@ -90,7 +90,7 @@ void init_graph(MetroTreeNode * root_ptr){
             q.push(n->right);
             node_cnt++;
             };
-    } //tree¸¦ ¼øÈ¸ÇÏ¸ç station node ÃÊ±âÈ­  ¹× »ı¼º
+    } 
 
      station_num=node_cnt;
 	 it_node=Node_map.begin();	
@@ -106,12 +106,12 @@ void init_graph(MetroTreeNode * root_ptr){
 		for(int i=0;i<list_size;++i){
 			Departure cur=*it;
             int nex_id=cur.get_id();
-             int nex_weight=cur.get_time_weight();  //10À¸·Î ¸ÕÀú ÃÊ±âÈ­ÇÔ
+             int nex_weight=cur.get_time_weight();  
             int nex_line=cur.get_line();       
             it_node=Node_map.find(nex_id);
             Node newtemp;
 
-            if(it_node ==Node_map.end()){ //Ãâ¹ßÀÌ ¾ø´Â ¿ª (Æ®¸®¿¡ »ı¼ºµÇÁö ¾ÊÀº ¿ª)             
+            if(it_node ==Node_map.end()){         
                 newtemp.station_id=nex_id;               
                 cout<<"NEW STATION TREE NODE"<<newtemp.station_id<<endl;
 		        Node_map.insert(make_pair(newtemp.station_id,newtemp));
@@ -144,7 +144,7 @@ void init_graph(MetroTreeNode * root_ptr){
             q.push(n->left); }
         if(n->right!=nullptr){
             q.push(n->right); };
-    } //tree¸¦ ¼øÈ¸ÇÏ¸ç station node ÃÊ±âÈ­  ¹× »ı¼º
+    } 
 	
 }
 
@@ -153,40 +153,40 @@ void init_graph(MetroTreeNode * root_ptr){
 pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, map<int ,tuple<int,int,int>> path){ 
      
     int node_id=arrive_id;
-    vector<pair<int,int>> min_path; // Á¤·ùÀå ¹øÈ£¸¸ ÀúÀåÇÏ´Â º¤ÅÍ
+    vector<pair<int,int>> min_path; 
     stack<string> st_path;
     string path_Str="";
     
     int past_rail=get<1>(path[node_id]);
     MetroTreeNode * temp=search(r,node_id);
     if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
-    st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+" line)");
+    st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+" í˜¸ì„ )");
     if(get<2>(path[node_id])==INF){cout<<"TRACK PATH CAN'T VISITED NODE"; exit(1);}
     min_path.push_back(make_pair(node_id,(get<2>(path[node_id]))));  
 
     while(1){
-        node_id=get<0>(path[node_id]); // Á¤·ùÀå ¹øÈ£     
-        int newrail=get<1>(path[node_id]); // ³ë¼± Á¤º¸       
-        if(past_rail!=newrail &&node_id!=departure_id){ // ÀÌÀü ³ë¼± Á¤º¸¿Í »õ·Î ¹ŞÀº ³ë¼± Á¤º¸°¡ ´Ù¸¦ ¶§
-            st_path.push("("+to_string(newrail)+"->"+to_string(past_rail)+" trans) ");           
-            past_rail=newrail; // ³ë¼±Á¤º¸ ¾÷µ¥ÀÌÆ®
+        node_id=get<0>(path[node_id]);    
+        int newrail=get<1>(path[node_id]);     
+        if(past_rail!=newrail &&node_id!=departure_id){ 
+            st_path.push("("+to_string(newrail)+"->"+to_string(past_rail)+" í™˜ìŠ¹) ");           
+            past_rail=newrail;
             min_path.push_back(make_pair(0,(get<2>(path[node_id]))));
         }
       
-        if(node_id==departure_id){  // Ãâ¹ßÁöÁ¡¿¡ µµÂøÇÔ
+        if(node_id==departure_id){ 
             temp=search(r,node_id);
              if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
-            st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+" line)");
+            st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+"í˜¸ì„ )");
             min_path.push_back(make_pair(node_id,get<2>(path[node_id])));          
             break;}
         else{
               temp=search(r,node_id);
                if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
-              st_path.push(temp->data.get_station_name()+"("+to_string(get<1>(path[node_id]))+" line)");
+              st_path.push(temp->data.get_station_name()+"("+to_string(get<1>(path[node_id]))+"í˜¸ì„ )");
               min_path.push_back(make_pair(node_id,get<2>(path[node_id]))); }                     
     }
 
-    reverse(min_path.begin(),min_path.end()); // ¿ªÃßÀûÀÌ±â ¶§¹®¿¡ reverse
+    reverse(min_path.begin(),min_path.end());
     
     while(!st_path.empty()){
         string cur= st_path.top();
@@ -222,8 +222,8 @@ pair<int,int> find_min_path(int present_station,int next_station,int start_time,
     temp=search(r,next_station);
     if(temp==NULL){cout<<"Can't find Data"; exit(1);}
     string nx_station_name=temp->data.get_station_name();
-    if(pr_line!=-1) cout<<'\n'<<'\n'<<"<"<< pr_station_name<<"("<<pr_line<<")"<<" -> " <<nx_station_name<<"("<<nx_line<<")" <<" Inquire about the data. >"<<'\n'<<endl;
-    else cout<<'\n'<<'\n'<<"<"<< pr_station_name<<" -> " <<nx_station_name<<"("<<nx_line<<")" <<" Inquire about the data. >"<<'\n'<<endl;
+    if(pr_line!=-1) cout<<'\n'<<'\n'<<"< "<< pr_station_name<<"("<<pr_line<<"í˜¸ì„ )"<<" -> " <<nx_station_name<<"("<<nx_line<<"í˜¸ì„ )" <<" í™˜ìŠ¹ ë°ì´í„° ì¡°íšŒ >"<<'\n'<<endl;
+    else cout<<'\n'<<'\n'<<"< "<< pr_station_name<<" -> " <<nx_station_name<<"("<<nx_line<<"í˜¸ì„ )" <<" ë°ì´í„° ì¡°íšŒ >"<<'\n'<<endl;
  }
 
    map<int,Node>::iterator it;
@@ -237,26 +237,26 @@ pair<int,int> find_min_path(int present_station,int next_station,int start_time,
        for(int j=0;j<it->second.station_ptr[i].second.departure_data.size();j++){    
        if( cur.second.departure_data[j] >=start_time && min_departure>cur.second.departure_data[j])
         { int param=cur.second.departure_data[j];
-           if( param/100>start_time/100) //¾ÕÀÚ¸®°¡ ´õ Å¬¶§ (½Ã ´ÜÀ§°¡)
+           if( param/100>start_time/100) 
                     param=cal_time(cur.second.departure_data[j]);
            wait_time=param-start_time;
-           min_departure=cur.second.departure_data[j];} // µµÂø ÁöÁ¡ÀÌ °°´õ¶óµµ ´õ ºü¸¥ Á¤º¸¸¦ ±â·Ï              
+           min_departure=cur.second.departure_data[j];}             
              } 
         }
    }
 
    if(wait_time<=-1 || min_departure==0xfffff){
       if(op){  cout<< "None Data"<<wait_time<<","<<start_time;
-                cout<<'\n'<<"-----------------------------------------------------------"<<'\n'; }
+                cout<<'\n'<<"----------------------------------------------------"<<'\n'; }
         return make_pair(0,0); }
    else{
        if(op){
          temp=search(r,next_station);
          if(temp==NULL){cout<<"Can't find Data"; exit(1);}
-         cout<<"Current time: " <<print_HHMM(convert_time(start_time))<<endl;   
-         cout<<"Fastest train bound for " <<temp->data.get_station_name()<< " is "  <<print_HHMM(convert_time(min_departure))<<'\n';
-         cout<< "The waiting time required: "<< print_HHMM(convert_time(wait_time))<<"("<<wait_time<<")";
-         cout<<'\n'<<"------------------------------------------------------------"<<'\n'; }
+         cout<<"í˜„ì¬ ì‹œê°: " <<print_HHMM(convert_time(start_time))<<endl;   
+         cout<<temp->data.get_station_name()<< " í–‰ ê°€ì¥ ë¹ ë¥¸ ì—´ì°¨ : "  <<print_HHMM(convert_time(min_departure))<<'\n';
+         cout<< "ì†Œìš” ëŒ€ê¸° ì‹œê°„ : "<< print_HHMM(convert_time(wait_time));
+         cout<<'\n'<<"----------------------------------------------------"<<'\n'; }
    return make_pair(stoi(convert_time(wait_time)),min_departure);
    }
     
@@ -266,32 +266,32 @@ pair<map<int,int>, map <int,tuple<int,int,int>>> trans_dijkstra(int departure_id
  
    priority_queue <tuple<int,int, int>,vector<tuple<int,int, int>>,greater<tuple<int,int,int>>> q;
    map <int, int> dist;
-   map<int,tuple<int,int,int>> path; //Á¤·ùÀå,³ë¼±, ¼Ò¿ä½Ã°£  
+   map<int,tuple<int,int,int>> path; 
    map<int,Node> ::iterator it_new=Node_map.begin();
    int cnt=0;
    MetroTreeNode * k=search(r,departure_id);
    if(k==NULL){cout<<"DIJKSTRA ERROR CAN'T FIND NODE"; exit(1); }
 
-   for(int i=1;i<=station_num;i++){  // travel ÇÏ¸é¼­ ¸ğµç ³ëµå¸¦ ÃÊ±âÈ­ ÇØ¾ßÇÔ   
+   for(int i=1;i<=station_num;i++){ 
        int id= it_new->second.station_id; 
-       dist.insert(make_pair(id,INF));  // KEY: ID Value: ¼Ò¿ä½Ã°£
-       path.insert(make_pair(id,make_tuple(-1,-1,-1))); //KEY: ID , VALUE (¿¬°á ¿ª id, line, time)
+       dist.insert(make_pair(id,INF)); 
+       path.insert(make_pair(id,make_tuple(-1,-1,-1))); 
        cnt++;
        it_new++;
    }
 
    dist[departure_id]=0; 
-   q.push(make_tuple(0,departure_id,0)); // ½ÃÀÛÁ¡À» Ã³À½À¸·Î ¿ì¼±¼øÀ§ Å¥¿¡ Ãß°¡
+   q.push(make_tuple(0,departure_id,0)); 
   
-   int start_time=time; // ÇöÀç ½Ã°£ ÀÔ·Â
+   int start_time=time; 
    int j=0;
    int here_rail=0;
  
     while (!q.empty())
     {
-        // ¿ì¼±¼øÀ§ Å¥¿¡ À½ÀÇ °¡ÁßÄ¡·Î µé¾î°¡ ÀÖÀ¸´Ï ¾çÀ¸·Î ¹Ù²Ù¾îÁØ´Ù.
-        int cost =get<0>(q.top()); //°¡ÁßÄ¡
-        int here =get<1>(q.top());// Á¤·ùÀå id
+      
+        int cost =get<0>(q.top()); 
+        int here =get<1>(q.top());
         int rail_num=get<2>(q.top());//line
        
         int save=0;     
@@ -322,7 +322,7 @@ pair<map<int,int>, map <int,tuple<int,int,int>>> trans_dijkstra(int departure_id
 
            if(departure_id==here) here_rail=there_rail;
 
-            if( there_rail!=rail_num ){  // È¯½ÂÁöÁ¡
+            if( there_rail!=rail_num ){ 
                 it=dist.find(here);
                 if(it!=dist.end()){
                 int move_time=(it->second);
@@ -343,7 +343,7 @@ pair<map<int,int>, map <int,tuple<int,int,int>>> trans_dijkstra(int departure_id
         }
     }
   
-    return make_pair(dist,path); // °¢ Á¤·ùÀå¿¡ ´ëÇÑ ÃÖ¼Ò ¼Ò¿ä ½Ã°£ ¹İÈ¯
+    return make_pair(dist,path); 
 }
 
 int transfer_num(vector<pair<int,int>>Track){
@@ -359,25 +359,24 @@ void search_optimize_schedule(vector<pair<int,int>> search_line, int departure_t
     int line=-1;
     for(int i=0;i< search_line.size();i++){
         if(search_line[i].first==0){
-             cout<<"                 <Trans station >"<<'\n';    
-            // tuple<int,node*,int> temp=find_connect_node(node_array[search_line[i-1].first],search_line[i+1].first);
-            it_node=Node_map.find(search_line[i-1].first);
-            if(it_node!=Node_map.end()){
-                for(int i=0;i<it_node->second.station_ptr.size();i++){
-                    if(search_line[i+1].first ==it_node->second.station_ptr[i].first->station_id ) 
-                     line=it_node->second.station_ptr[i].second.line_num;
-                }
-            }else cout<<"NONE NODE STATION" <<endl;
+             cout<<"                 < í™˜ìŠ¹ ì§€ì  >"<<'\n';    
             pair<int,int> temp_min= find_min_path(search_line[i-1].first,search_line[i+1].first, search_line[i].second+departure_time,line);
         }else{
-            if(i==0){ 
+            if(i==0){
+              it_node=Node_map.find(search_line[i].first);
+             if(it_node!=Node_map.end()){
+                for(int j=0;j<it_node->second.station_ptr.size();j++){
+                    if(search_line[i+1].first ==it_node->second.station_ptr[j].first->station_id ) 
+                     line=it_node->second.station_ptr[j].second.line_num;  
+                }
+            }else cout<<"NONE NODE STATION" <<endl;    
              find_min_path(search_line[i].first,search_line[i+1].first, departure_time,-1); }
              else if(i==search_line.size()-1){
                     MetroTreeNode *temp= search(r,search_line[i].first);
                     if(temp==NULL) {cout<<"SEARCH OPTIMIZE SCHEDULE ERROR CAN'T FIND NODE"; exit(2);}               
                      string destination_name=temp->data.get_station_name();
-					 cout<<'\n'<<"Arrive at "<<destination_name<<" Station "<<endl;
-                     cout<<"Arrival Time: "<<print_HHMM(convert_time(search_line[i].second+departure_time))<<endl;
+					 cout<<'\n'<<destination_name<<" ì—­ì— ë„ì°©í•˜ì˜€ìŠµë‹ˆë‹¤. "<<endl;
+                     cout<<"ì˜ˆìƒ ë„ì°© ì‹œê°„ : "<<print_HHMM(convert_time(search_line[i].second+departure_time))<<endl<<endl;
                      break;
              }
            
@@ -387,7 +386,7 @@ void search_optimize_schedule(vector<pair<int,int>> search_line, int departure_t
 
 int find_fair_station(map<int,int>a, map<int,int>b){
   
-    pair<int,int> min_node=make_pair(0xfffff,0); // °øÁ¤¼º , ³ë¼±¿ª 
+    pair<int,int> min_node=make_pair(0xfffff,0);
     int size=a.size();
     map<int, int> :: iterator it_a=a.begin();
     map<int, int> :: iterator it_b=b.begin();
@@ -420,7 +419,7 @@ pair<int, pair<string,vector<pair<int,int>>>>find_max_departure_time(int A_stati
     pair<string,vector<pair<int,int>>> track_optimize_path;
     int tot=0;
     int before=0;
-    pair<int,int> gap=make_pair(0,0); // Ãâ¹ß ½Ã°£, ´ë±â ½Ã°£
+    pair<int,int> gap=make_pair(0,0); 
 	it_node=Node_map.find(A_station_id);
 	vector<pair<node*,node_info>> start_node=it_node->second.station_ptr;
 	int size=start_node.size();
@@ -454,8 +453,8 @@ pair<int, pair<string,vector<pair<int,int>>>>find_max_departure_time(int A_stati
 tuple<string,Track_info,Track_info> find_optimized_schedule_path(int A_station, int B_station,int end_schedule_time, int next_schedule_time){
  
     
-    int estimated_departure=end_schedule_time; // Ãâ¹ß ½Ã°£ °¡Á¤
-    int estimated_arrive=next_schedule_time; // µµÂø ¿¹Á¤ ½Ã°£ °¡Á¤ (´ÙÀ½ ½ºÄÉÁÙ ½ÃÀÛ ½Ã°£À¸·Î ÃßÈÄ º¯°æ)
+    int estimated_departure=end_schedule_time; 
+    int estimated_arrive=next_schedule_time;
     
      MetroTreeNode * A_NODE=search(r,A_station );
      MetroTreeNode * B_NODE=search(r,B_station );
@@ -473,17 +472,17 @@ tuple<string,Track_info,Track_info> find_optimized_schedule_path(int A_station, 
     
     int destination=track_optimize_path.second.size()-1;
 
-    string minimum_schecdule_path_Str="Minimum estimated time : "+print_HHMM(to_string(track_optimize_path.second[destination].second))+'\n';
-    string schedule_transfer_num_str="Number of Trans : "+to_string(transfer_num(get<1>(track_optimize_path)))+'\n';
+    string minimum_schecdule_path_Str="ìµœì†Œ ì†Œìš” ì‹œê°„ : "+print_HHMM(to_string(track_optimize_path.second[destination].second))+'\n';
+    string schedule_transfer_num_str="í™˜ìŠ¹ íšŸìˆ˜ : "+to_string(transfer_num(get<1>(track_optimize_path)))+'\n';
     string schedule_Path_str="Path : "+get<0>(track_optimize_path)+'\n';
     
-    int min_arrive_time= track_optimize_path.second[destination].second + estimated_departure ;// Ãâ¹ß ½Ã°£+ ÃÖ´Ü ½Ã°£ °æ·ÎÀÇ ½Ã°£
-    string min_arrive_time_str="Mininmum estimated arrival time : "+print_HHMM(convert_time(min_arrive_time))+'\n';
+    int min_arrive_time= track_optimize_path.second[destination].second + estimated_departure ;
+    string min_arrive_time_str="ìµœì†Œ ë„ì°© ì‹œê°„ : "+print_HHMM(convert_time(min_arrive_time))+'\n';
      
     pair<int, pair<string,vector<pair<int,int>>>> max_time= find_max_departure_time(A_station,B_station,estimated_departure,estimated_arrive); 
     string max_Path_str="Path : "+get<1>(max_time).first+'\n';
-    string max_time_Str="Maximum departure time : "+print_HHMM(convert_time(max_time.first))+'\n';
-    string max_transfer_num_str="Number of Trans : "+to_string(transfer_num(get<1>(max_time).second))+'\n';
+    string max_time_Str="ë†“ì¹˜ë©´ ì•ˆë˜ëŠ” ë§ˆì§€ë§‰ ì—´ì°¨ : "+print_HHMM(convert_time(max_time.first))+'\n';
+    string max_transfer_num_str="í™˜ìŠ¹ íšŸìˆ˜ : "+to_string(transfer_num(get<1>(max_time).second))+'\n';
     string result= schedule_Str+'\n'+minimum_schecdule_path_Str+schedule_transfer_num_str+min_arrive_time_str+ schedule_Path_str+
     '\n'+max_time_Str+max_transfer_num_str+max_Path_str;
  

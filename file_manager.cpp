@@ -87,101 +87,52 @@ MetroTreeNode* read_metro_data()
 	return root;
 }
 
-void save_metro_data(MetroTreeNode* root) {
-    queue<MetroTreeNode*> s;
-    s.push(root);
-
-	ofstream json_file;
-	json_file.open("metro.json");
-
-	Json::Value metroData;
-
-    while(!s.empty()){
-        MetroTreeNode* now = s.front();
-        s.pop();
-
-		Json::Value metro;
-
-		metro["station_name"] = now->data.get_station_name();
-
-		Json::Value departure_list;
-
-		for(auto departure : now->data.get_departure_list()) {
-			Json::Value departureObj;			
-
-			departureObj["station_name"] = departure.get_station_name();
-			departureObj["line"] = departure.get_line();
-			departureObj["time_weight"] = departure.get_time_weight();
-
-			Json::Value departure_time_list;
-			
-			for(auto departure_time : departure.get_departure_time()) {
-				departure_time_list.append(departure_time);
-			}
-
-			departureObj["departure_time"] = departure_time_list;
-
-			departure_list.append(departureObj);
-		}
-		
-		metro["departure_list"] = departure_list;
-		metroData.append(metro);
-
-        if(now->parent != NULL)
-			;
-        else
-			;
-        if(now->left != nullptr)
-            s.push(now->left);
-        if(now->right != nullptr)
-            s.push(now->right);
-    }
-	Json::StreamWriterBuilder builder;
-	builder["commentStyle"] = "None";
-	builder["indentation"] = "    ";
-	unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-
-	writer->write(metroData, &json_file);
-	cout << endl;
-
-	json_file.close();
-
-}
-
-
 void save_user_data(UserTreeNode* root) {
+	string ret = "";
+
+	ret.append("[\n");
+
     queue<UserTreeNode*> s;
     s.push(root);
 
-	ofstream json_file;
-	json_file.open("user.json");
-
-	Json::Value userData;
-
+	bool isFirstUser = true;
     while(!s.empty()){
+		if(isFirstUser)
+			isFirstUser = false;
+		else
+			ret.append(",\n");
         UserTreeNode* now = s.front();
         s.pop();
 
-		Json::Value user;
+		ret.append("\t{\n");
 
-		user["name"] = now->data.get_name();
-		user["station_name"] = now->data.get_station_name();
+		ret.append("\t\t\"name\" : \"").append(now->data.get_name()).append("\",\n");
+		ret.append("\t\t\"station_name\" : \"").append(now->data.get_station_name()).append("\",\n");
+		ret.append("\t\t\"schedule_list\" :\n");
 
-		Json::Value schedule_list;
+		ret.append("\t\t\[\n");
 
+		bool isFirstSchedule = true;
 		for(auto schedule : now->data.get_schedule_list()) {
-			Json::Value scheduleObj;			
+			if(isFirstSchedule)
+				isFirstSchedule = false;
+			else
+				ret.append(",\n");
+			ret.append("\t\t\t{\n");
 
-			scheduleObj["name"] = schedule.get_name();
-			scheduleObj["start_time"] = schedule.get_start_time();
-			scheduleObj["end_time"] = schedule.get_end_time();
-			scheduleObj["station_name"] = schedule.get_station_name();
+			ret.append("\t\t\t\t\"name\" : \"").append(schedule.get_name()).append("\",\n");
+			ret.append("\t\t\t\t\"station_name\" : \"").append(schedule.get_station_name()).append("\",\n");
+			ret.append("\t\t\t\t\"start_time\" : ").append(to_string(schedule.get_start_time())).append(",\n");
+			ret.append("\t\t\t\t\"end_time\" : ").append(to_string(schedule.get_end_time())).append("\n");
 
-			schedule_list.append(scheduleObj);
+			ret.append("\t\t\t}");
 		}
-		
-		user["schedule_list"] = schedule_list;
-		userData.append(user);
+
+		ret.append("\n");
+		ret.append("\t\t]\n");
+
+		ret.append("\t}");
+
         if(now->parent != NULL)
 			;
         else
@@ -191,15 +142,12 @@ void save_user_data(UserTreeNode* root) {
         if(now->right != nullptr)
             s.push(now->right);
     }
-	Json::StreamWriterBuilder builder;
-	builder["commentStyle"] = "None";
-	builder["indentation"] = "    ";
-	unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+	ret.append("\n]");
 
-	writer->write(userData, &json_file);
-	cout << endl;
-
+	ofstream json_file("user.json", ofstream::trunc);
+	json_file << ret;
 	json_file.close();
 
 }
+
 
