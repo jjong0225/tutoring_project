@@ -185,44 +185,52 @@ int main()
                                         case 1:
                                         {
                                             
-                                            MetroTreeNode* metro1 = search(metro_root, hash<string>{}(user2->data.get_station_name()));
-                                            if(user2==NULL||metro1==NULL){cout<<"정보 조회 실패"<<endl; break;}
-                                            fstation = metro1->data.get_id();
-                                            int now_time;
-                                            cout<<"현재 시각을 입력하세요 [HHMM : 2400]"<<endl;
-                                            cin >> now_time;
-                                            list <Schedule> ::iterator it_s=user2->data.get_schedule_list().begin();
-                                            list <Schedule> list_s=user2->data.get_schedule_list();
-                                            for(Schedule schedule : user2->data.get_schedule_list()) {
-                                                Schedule cur=schedule;
-                                                int nx_id=hash<string>{}(cur.get_station_name());
-                                                if(cur.get_start_time() > now_time){
-                                                cout<<"스케줄 ["+cur.get_name()+"]"<<endl;
-                                                cout<<"스케줄 장소 : "<<cur.get_station_name()<<endl;
-                                                cout<<"시작 시간: "<<cur.get_start_time()<<"  종료 시간: "<<cur.get_end_time()<<endl<<endl;
-                                                tuple<string,Track_info,Track_info> schedule_result= find_optimized_schedule_path(fstation,nx_id,now_time, cur.get_start_time());
-                                                if(get<0>(schedule_result)!=" ") {
-                                                    printf("\n--------------------스케줄 조회--------------------\n\n");    
-                                                    cout<<get<0>(schedule_result)<<endl;
-                                                    int option=0;
-                                                    printf("[ Option 선택 ]\n\n");
-                                                    cout<<"1. 최소 도착 시간 경로 조회  "<<"2. 늦지 않을 최대 출발 시간 경로 조회"<<endl<<"3. 모두 조회 4. 조회하지 않음"<<endl;
-                                                    cin>>option;
-                                                    if(option==1 ||option ==3){
-                                                    printf("--------------바로 지금 출발 한다면 ?---------------\n");
-                                                    search_optimize_schedule(get<1>(schedule_result).path_list,get<1>(schedule_result).departure_time); // 최소 소요 시간 track
-                                                    }
-                                                    if(option==2 ||option ==3){
-                                                    printf("\n---------------늦어도 이땐 출발해야 해!---------------\n");
-                                                    search_optimize_schedule(get<2>(schedule_result).path_list,get<2>(schedule_result).departure_time); // 최대 출발 track
-                                                    }
-                                                }else{cout<<"check input Data"<<endl;}
-                                                fstation=hash<string>{}(cur.get_station_name());
-                                                now_time=cur.get_end_time();
+                                              cout << "보고 싶은 유저의 이름을 입력해주세요!" << endl;
+                                        cin >> fname;
+                                        
+                                        UserTreeNode *user3 = search(user_root, hash<string>{}(fname));
+                                        MetroTreeNode* metro1 = search(metro_root, hash<string>{}(user3->data.get_station_name()));
+                                        if(user3==NULL||metro1==NULL){cout<<"정보 조회 실패"<<endl; break;}
+                                        fstation = metro1->data.get_id();
+                                        int now_time;
+                                        cout<<"현재 시각을 입력하세요 [HHMM : 2400]"<<endl;
+                                        cin >> now_time;
+                        
+                                        list <Schedule> list_s=user3->data.get_schedule_list();
+                                        list_s.sort(schedule_cmp);
+                                        list <Schedule> ::iterator it_s=list_s.begin();
+                                    for(int i=0;i<list_s.size();i++) {
+                                            Schedule cur=*it_s;
+                                            int nx_id=hash<string>{}(cur.get_station_name());
+                                            if(cur.get_start_time() > now_time){
+                                            cout<<"스케줄 ["+cur.get_name()+"]"<<endl;
+                                            cout<<"스케줄 장소 : "<<cur.get_station_name()<<endl;
+                                            cout<<"시작 시간: "<<cur.get_start_time()<<"  종료 시간: "<<cur.get_end_time()<<endl<<endl;
+                                            tuple<string,Track_info,Track_info> schedule_result= find_optimized_schedule_path(fstation,nx_id,now_time, cur.get_start_time());
+                                            if(get<0>(schedule_result)!=" ") {
+                                                printf("\n--------------------스케줄 조회--------------------\n\n");    
+                                                cout<<get<0>(schedule_result)<<endl;
+                                                int option=0;
+                                                printf("[ Option 선택 ]\n\n");
+                                                cout<<"1. 최소 도착 시간 경로 조회  "<<"2. 늦지 않을 최대 출발 시간 경로 조회"<<endl<<"3. 모두 조회 4. 조회하지 않음"<<endl;
+                                                cin>>option;
+                                                if(option==1 ||option ==3){
+                                                printf("--------------바로 지금 출발 한다면 ?---------------\n");
+                                                search_optimize_schedule(get<1>(schedule_result).path_list,get<1>(schedule_result).departure_time); // 최소 소요 시간 track
                                                 }
+                                                if(option==2 ||option ==3){
+                                                printf("\n---------------늦어도 이땐 출발해야 해!---------------\n");
+                                                search_optimize_schedule(get<2>(schedule_result).path_list,get<2>(schedule_result).departure_time); // 최대 출발 track
+                                                }
+                                            }else{cout<<"check input Data"<<endl;}
+                                            fstation=hash<string>{}(cur.get_station_name());
+                                            now_time=cur.get_end_time();
+                                                
                                             }
-                                            cout << "오늘 스케줄이 끝났습니다." << endl;
-                                            break;
+                                        it_s++;
+                                        }
+                                        cout << "오늘 스케줄이 끝났습니다." << endl;
+							break;
                                         }
                                         case 2:
                                         {
