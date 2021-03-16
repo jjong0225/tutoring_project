@@ -43,17 +43,19 @@ void Schedule::print()
 
 // User Class
 
-User::User(string param_string, string param_main_station_name)
+User::User(string param_string, string param_main_station_name, int password)
 {
 	// 생성자 코드, id는 string hash로 할당해주기
 	this->name = param_string;
 	this->id = hash<string>{}(param_string);
+	this->password = password;
 	this->station_name = param_main_station_name;
 }
 User::User(const User &copy_user)
 {
 	name = copy_user.get_name();
     station_name = copy_user.get_station_name(); // 유저의 역, 스케쥴의 언제나 맨 처음이고 언제나 맨 마지막이다. 변하면 안됨
+	password = copy_user.get_password();
     id = copy_user.get_id();
 }
 string User::get_name() const{
@@ -64,6 +66,9 @@ string User::get_station_name() const{
 }
 int User::get_id() const{
 	return this->id;
+}
+int User::get_password() const{
+	return this->password;
 }
 list<Schedule> User::get_schedule_list(){
 	return this->schedule_list;

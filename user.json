@@ -1,47 +1,50 @@
 [
-    {
-        "name" : "김효민",
-        "schedule_list" : 
-        [
-            {
-                "end_time" : 1200,
-                "name" : "멘토링",
-                "start_time" : 900,
-                "station_name" : "서울역"
-            }
-        ],
-        "station_name" : "종각"
-    },
-    {
-        "name" : "안종훈",
-        "schedule_list" : 
-        [
-            {
-                "end_time" : 1300,
-                "name" : "알바",
-                "start_time" : 1200,
-                "station_name" : "시청"
-            },
-            {
-                "end_time" : 1500,
-                "name" : "수업",
-                "start_time" : 1400,
-                "station_name" : "종로5가"
-            }
-        ],
-        "station_name" : "서울역"
-    },
-    {
-        "name" : "박상욱",
-        "schedule_list" : 
-        [
-            {
-                "end_time" : 1700,
-                "name" : "수업",
-                "start_time" : 1500,
-                "station_name" : "을지로3가"
-            }
-        ],
-        "station_name" : "사당"
-    }
+	{
+		"name" : "김효민",
+		"password" : -160425664,
+		"station_name" : "종각",
+		"schedule_list" :
+		[
+			{
+				"name" : "멘토링",
+				"station_name" : "서울역",
+				"start_time" : 900,
+				"end_time" : 1200
+			}
+		]
+	},
+	{
+		"name" : "안종훈",
+		"password" : -160425664,
+		"station_name" : "서울역",
+		"schedule_list" :
+		[
+			{
+				"name" : "알바",
+				"station_name" : "시청",
+				"start_time" : 1200,
+				"end_time" : 1300
+			},
+			{
+				"name" : "수업",
+				"station_name" : "종로5가",
+				"start_time" : 1400,
+				"end_time" : 1500
+			}
+		]
+	},
+	{
+		"name" : "박상욱",
+		"password" : -160425664,
+		"station_name" : "사당",
+		"schedule_list" :
+		[
+			{
+				"name" : "수업",
+				"station_name" : "을지로3가",
+				"start_time" : 1500,
+				"end_time" : 1700
+			}
+		]
+	}
 ]

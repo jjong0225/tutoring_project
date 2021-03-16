@@ -1,6 +1,7 @@
 #include "objects.h"
 #include "data_structure.h"
 #include "algorithm.h"
+#include "file_manager.h"
 #include <iostream>
 #include <list>
 #include<map>
@@ -72,6 +73,12 @@ string print_HHMM(string val){
     return time;
 }
 
+bool schedule_cmp(Schedule  &a, Schedule  &b){
+	if(a.get_start_time() <= b.get_start_time())
+        return true; 
+    else
+        return false;
+}
 
 void init_graph(MetroTreeNode * root_ptr){
 	 r=root_ptr;
