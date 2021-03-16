@@ -20,6 +20,7 @@ typedef struct track_info{
 }Track_info;
 UserTreeNode * login(UserTreeNode *root, string username, string password);
 void init_graph( MetroTreeNode * root_ptr);
+bool schedule_cmp(Schedule  &a, Schedule  &b);
 string convert_time(int time);
 int min_to_hour(int time);
 int cal_time(int input_time);
