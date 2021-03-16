@@ -18,22 +18,19 @@ typedef struct TreeNode {
 template <typename T>
 T *search(T *root, int key) // 데이터에 대한 UserTreeNode 포인터 반환
 {
-    T *leftNode = nullptr, *rightNode = nullptr;
+    T *current = root;
     if (root == nullptr)
         return nullptr;
-    if(root->data.get_id() == key)
-        return root;
-    else if (root->data.get_id() < key && root->right != nullptr)
-        rightNode = search(root->right, key);
-    else if (root->data.get_id() > key && root->left != nullptr)
-        leftNode = search(root->left, key);
-    
-    if(rightNode == nullptr && leftNode ==nullptr)
-        return nullptr;
-    else if(rightNode == nullptr)
-        return leftNode;
-    else
-        return rightNode;
+    while (current != nullptr)
+    {
+        if(current->data.get_id() == key)
+            return current;
+        else if(current->data.get_id() < key)
+            current = current->right;
+        else if(current->data.get_id() > key)
+            current = current->left;
+    }
+    return nullptr;
 }
 
 void insert_node(UserTreeNode *&root, User &userNode);
