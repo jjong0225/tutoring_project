@@ -1,6 +1,7 @@
 #include "objects.h"
 #include "data_structure.h"
 #include "algorithm.h"
+#include "file_manager.h"
 #include <iostream>
 #include <list>
 #include<map>
