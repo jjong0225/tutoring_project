@@ -264,7 +264,10 @@ int main()
                         cin >> password;
                         cout <<"유저의 출발 역은 어디입니까?"<< endl;
                         cin >> station;
-                        User user1 = User(name, station);
+
+						int password_hash = hash<string>{} (password);
+
+                        User user1 = User(name, station, password_hash);
                         insert_node(user_root, user1);
                         cout << "유저의 id는 " << user1.get_id() <<"입니다."<< endl;
                         savecheck = 1;
