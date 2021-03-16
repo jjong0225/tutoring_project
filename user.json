@@ -10,6 +10,18 @@
 				"station_name" : "서울역",
 				"start_time" : 900,
 				"end_time" : 1200
+			},
+			{
+				"name" : "멘토링",
+				"station_name" : "서울역",
+				"start_time" : 1300,
+				"end_time" : 1500
+			},
+			{
+				"name" : "멘토링",
+				"station_name" : "서울역",
+				"start_time" : 700,
+				"end_time" : 800
 			}
 		]
 	},
@@ -36,7 +48,7 @@
 	{
 		"name" : "박상욱",
 		"password" : -160425664,
-		"station_name" : "사당",
+		"station_name" : "충무로",
 		"schedule_list" :
 		[
 			{
