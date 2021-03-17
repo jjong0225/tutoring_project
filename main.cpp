@@ -213,6 +213,7 @@ int main()
                                                 cout<<'\n'<<'\n'<<"스케줄 ["+cur.get_name()+"]"<<endl;
                                                 cout<<"스케줄 장소 : "<<cur.get_station_name()<<endl;
                                                 cout<<"시작 시간: "<<cur.get_start_time()<<"  종료 시간: "<<cur.get_end_time()<<endl<<endl;
+                                                if(nx_id!=fstation){
                                                 tuple<string,Track_info,Track_info> schedule_result= find_optimized_schedule_path(fstation,nx_id,now_time, cur.get_start_time());
                                                 if(get<0>(schedule_result)!=" ") {
                                                     printf("\n--------------------스케줄 조회--------------------\n\n");    
@@ -221,7 +222,7 @@ int main()
                                                     printf("--------------------[ Option 선택 ]--------------------\n\n");
                                                     cout<<"1. 최소 도착 시간 경로 조회  "<<"2. 늦지 않을 최대 출발 시간 경로 조회"<<endl<<"3. 모두 조회 4. 조회하지 않음"<<endl;
                                                     cin>>option;
-                                                    if(option==1 ||option ==3){
+                                                    if(option==1 || option ==3){
                                                     printf("--------------바로 지금 출발 한다면?---------------\n");
                                                     search_optimize_schedule(get<1>(schedule_result).path_list,get<1>(schedule_result).departure_time); // 최소 소요 시간 track
                                                     }
@@ -229,7 +230,11 @@ int main()
                                                     printf("\n---------------늦어도 이땐 출발해야 해!---------------\n");
                                                     search_optimize_schedule(get<2>(schedule_result).path_list,get<2>(schedule_result).departure_time); // 최대 출발 track
                                                     }
-                                                }else{cout<<"check input Data"<<endl;}
+                                                    }else{cout<<"check input Data"<<endl;}
+                                                 
+                                                  }else{
+                                                    cout<<"이전 스케줄과 스케줄 장소가 같습니다."<<endl;
+                                                }
                                                 fstation=hash<string>{}(cur.get_station_name());
                                                 now_time=cur.get_end_time();
                                                     
