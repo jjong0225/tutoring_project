@@ -21,10 +21,10 @@ map<int, Node> ::iterator it_node = Node_map.begin();
 UserTreeNode * login(UserTreeNode *root, string username, string password){
     UserTreeNode * current = search(root, hash<string>{}(username));
     if(current == nullptr)
-        return NULL;
-    else if(current->data.check_password(password) == true)
+        return nullptr;
+    else if(current->data.get_password() == password)
         return current;
-    else return NULL;
+    else return nullptr;
 }
 
 string convert_time(int time){

@@ -48,7 +48,8 @@ int main()
                 cout << "비번: ";
                 cin >> password;
                 UserTreeNode *user2 = search(user_root, hash<string>{}(fname));
-                if(user2){
+                UserTreeNode *log = login(user_root, fname, password);
+                if(log != nullptr){
                     while(command != 4){
                         cout << "========================================================="<< endl;
                         cout << "안녕하세요 " << user2->data.get_name() <<"님 반갑습니다." << endl;
@@ -311,9 +312,8 @@ int main()
                         cout <<"유저의 출발 역은 어디입니까?"<< endl;
                         cin >> station;
                         if(Metro_check(metro_root,hash<string>{}(station))){
-						int password_hash = hash<string>{} (password);
 
-                        User user1 = User(name, station, password_hash);
+                        User user1 = User(name, station, password);
                         insert_node(user_root, user1);
                         cout << "유저의 id는 " << user1.get_id() <<"입니다."<< endl;
                         savecheck = 1;

@@ -43,7 +43,7 @@ void Schedule::print()
 
 // User Class
 
-User::User(string param_string, string param_main_station_name, int password)
+User::User(string param_string, string param_main_station_name, string password)
 {
 	// 생성자 코드, id는 string hash로 할당해주기
 	this->name = param_string;
@@ -67,7 +67,7 @@ string User::get_station_name() const{
 int User::get_id() const{
 	return this->id;
 }
-int User::get_password() const{
+string User::get_password() const{
 	return this->password;
 }
 list<Schedule> User::get_schedule_list(){
@@ -116,12 +116,6 @@ void User::delete_schedule(int index)
 void User::change_station_name(string new_name)
 {
 	this -> station_name = new_name;
-}
-bool User::check_password(string pw)
-{
-	if(hash<string>{}(pw) == this->password)
-		return true;
-	else return false;
 }
 
 // Metro Class
