@@ -50,6 +50,7 @@ int main()
                 UserTreeNode *user2 = search(user_root, hash<string>{}(fname));
                 UserTreeNode *log = login(user_root, fname, password);
                 if(log != nullptr){
+					command = 0;
                     while(command != 4){
                         cout << "========================================================="<< endl;
                         cout << "안녕하세요 " << user2->data.get_name() <<"님 반갑습니다." << endl;
