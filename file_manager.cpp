@@ -23,7 +23,7 @@ UserTreeNode* read_user_data()
 		for(auto user : userData) {
 			std::string name = user["name"].asString();
 			std::string station_name = user["station_name"].asString();
-			int password = user["password"].asInt();
+			string password = user["password"].asString();
 
 			User userObj = User(name, station_name, password);
 
@@ -108,7 +108,7 @@ void save_user_data(UserTreeNode* root) {
 		ret.append("\t{\n");
 
 		ret.append("\t\t\"name\" : \"").append(now->data.get_name()).append("\",\n");
-		ret.append("\t\t\"password\" : ").append(to_string(now->data.get_password())).append(",\n");
+		ret.append("\t\t\"password\" : ").append(now->data.get_password()).append(",\n");
 		ret.append("\t\t\"station_name\" : \"").append(now->data.get_station_name()).append("\",\n");
 		ret.append("\t\t\"schedule_list\" :\n");
 

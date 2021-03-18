@@ -48,14 +48,17 @@ int main()
                 cout << "비번: ";
                 cin >> password;
                 UserTreeNode *user2 = search(user_root, hash<string>{}(fname));
-                if(user2){
-                    while(command != 3){
+                UserTreeNode *log = login(user_root, fname, password);
+                if(log != nullptr){
+					command = 0;
+                    while(command != 4){
                         cout << "========================================================="<< endl;
                         cout << "안녕하세요 " << user2->data.get_name() <<"님 반갑습니다." << endl;
                 
                         cout<< "1. 유저 데이터 관리"<< endl;
                         cout<< "2. 스케줄 관리"<< endl;
-                        cout<< "3. 로그아웃하기"<< endl;
+						cout<< "3. 다른 유저와 스케줄 매칭하기"<<endl;
+                        cout<< "4. 로그아웃하기"<< endl;
 
                         cin >> command;
 
@@ -104,22 +107,31 @@ int main()
                                                     }
                                                     case 2:
                                                     {
-                                                        cout << "출발역을 어느역으로 바꾸시겠습니까? 바꿀 역이름을 입력해주세요" << endl;
-                                                        cin >> cstation;
-                                                        user2->data.change_station_name(cstation);
-                                                        savecheck = 1;
-                                                        break;
+                                                        
+														cout << "출발역을 어느역으로 바꾸시겠습니까? 바꿀 역이름을 입력해주세요" << endl;
+														cin >> cstation;
+														if(Metro_check(metro_root,hash<string>{}(cstation))){
+														user2->data.change_station_name(cstation);
+														savecheck = 1;
+														}else{
+															cout<<"바꾼 역이 노선에 존재하지 않습니다.";
+														}
+														break;
                                                     
                                                    }
                                                     case 3:
                                                     {
                                                         cout << "추가하고 싶은 스케줄을 입력해주세요!" <<endl;
-                                                        cout << "스케줄이름 시작시간 종료시간 도착역은?"<< endl;
-                                                        cin >> name1 >> time1 >> time2 >>station;
-                                                        Schedule schedule2 = Schedule(name1, time1, time2, station);
-                                                        user2->data.insert_schedule(schedule2);
-                                                        savecheck = 1;
-                                                        break;
+														cout << "스케줄이름 시작시간 종료시간 도착역은?"<< endl;
+														cin >> name1 >> time1 >> time2 >>station;
+														if(Metro_check(metro_root,hash<string>{}(station))){
+														time1=convert_time_input(time1);
+														time2=convert_time_input(time2);
+														Schedule schedule2 = Schedule(name1, time1, time2, station);
+														user2->data.insert_schedule(schedule2);
+														savecheck = 1;}
+														else{cout<<"도착역이 노선에 존재하지 않습니다.";}
+														break;
                                                     }
                                                     case 4:
                                                     {
@@ -177,7 +189,7 @@ int main()
                                 while(sub_command !=2){
                                     cout << "========================================================="<< endl;
                                     cout << "오늘 스케줄을 확인해보세요!" << endl;
-                                    cout<<"1. 스테줄 보기"<< endl;
+                                    cout<<"1. 스케줄 보기"<< endl;
                                     cout<<"2. 뒤로가기"<< endl;
                                     cin>> sub_command;
 
@@ -203,6 +215,7 @@ int main()
                                                 cout<<'\n'<<'\n'<<"스케줄 ["+cur.get_name()+"]"<<endl;
                                                 cout<<"스케줄 장소 : "<<cur.get_station_name()<<endl;
                                                 cout<<"시작 시간: "<<cur.get_start_time()<<"  종료 시간: "<<cur.get_end_time()<<endl<<endl;
+                                                if(nx_id!=fstation){
                                                 tuple<string,Track_info,Track_info> schedule_result= find_optimized_schedule_path(fstation,nx_id,now_time, cur.get_start_time());
                                                 if(get<0>(schedule_result)!=" ") {
                                                     printf("\n--------------------스케줄 조회--------------------\n\n");    
@@ -211,15 +224,19 @@ int main()
                                                     printf("--------------------[ Option 선택 ]--------------------\n\n");
                                                     cout<<"1. 최소 도착 시간 경로 조회  "<<"2. 늦지 않을 최대 출발 시간 경로 조회"<<endl<<"3. 모두 조회 4. 조회하지 않음"<<endl;
                                                     cin>>option;
-                                                    if(option==1 ||option ==3){
-                                                    printf("--------------바로 지금 출발 한다면 ?---------------\n");
+                                                    if(option==1 || option ==3){
+                                                    printf("--------------바로 지금 출발 한다면?---------------\n");
                                                     search_optimize_schedule(get<1>(schedule_result).path_list,get<1>(schedule_result).departure_time); // 최소 소요 시간 track
                                                     }
                                                     if(option==2 ||option ==3){
                                                     printf("\n---------------늦어도 이땐 출발해야 해!---------------\n");
                                                     search_optimize_schedule(get<2>(schedule_result).path_list,get<2>(schedule_result).departure_time); // 최대 출발 track
                                                     }
-                                                }else{cout<<"check input Data"<<endl;}
+                                                    }else{cout<<"check input Data"<<endl;}
+                                                 
+                                                  }else{
+                                                    cout<<"이전 스케줄과 스케줄 장소가 같습니다."<<endl;
+                                                }
                                                 fstation=hash<string>{}(cur.get_station_name());
                                                 now_time=cur.get_end_time();
                                                     
@@ -243,7 +260,38 @@ int main()
                                 }
                                 break;
                             }
-                    }
+							case 3: {
+										init_graph(metro_root);
+										string name_a,name_b,name;
+										int now_time, start_time,end_time;
+										
+										name_a=user2->data.get_name();
+										cout<<"현재 시간: ";				
+										cin >> now_time;
+										cout<<"상대 유저의 이름:" ;
+										cin>>name_b;
+										cout<<"스케줄 이름: ";
+										cin>>name;
+										cout<<"스케줄 시작 시간: ";
+										cin>>start_time;
+										cout<< "스케줄 종료 시간: "; 
+										cin>>end_time;
+
+										start_time=convert_time_input(start_time);
+										end_time=convert_time_input(end_time);
+
+										int id_a=hash<string>{}(name_a);
+										int id_b=hash<string>{}(name_b);
+										
+										UserTreeNode*B =search(user_root,id_b);
+										if(B==NULL){cout<<name_b<<"님은 등록되지 않은 회원 입니다.\n";break;}
+
+										bool success= match_schedule(metro_root,user_root,user2,B,start_time,end_time,now_time,name);
+										if(success) savecheck = 1;
+										break;
+
+									}	
+                   			 }
                     }
 					cout << "로그아웃되었습니다."<< endl;
                 }
@@ -264,15 +312,16 @@ int main()
                         cin >> password;
                         cout <<"유저의 출발 역은 어디입니까?"<< endl;
                         cin >> station;
+                        if(Metro_check(metro_root,hash<string>{}(station))){
 
-						int password_hash = hash<string>{} (password);
-
-                        User user1 = User(name, station, password_hash);
+                        User user1 = User(name, station, password);
                         insert_node(user_root, user1);
                         cout << "유저의 id는 " << user1.get_id() <<"입니다."<< endl;
                         savecheck = 1;
                         findcheck = 1;
-
+						}else{
+							cout<<"입력하신 출발 역은 노선에 존재하지 않습니다. 재시도 해주세요 \n";
+						}		
                     }
                     else{
                         cout << "이미 존재하는 아이디입니다.\n";
@@ -281,6 +330,7 @@ int main()
                 }
                 break;
             }
+			
             case 3:
             {   
                 if(savecheck){
