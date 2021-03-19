@@ -27,6 +27,8 @@ int main()
     MetroTreeNode* metro_root = read_metro_data();
 
     while(command_m != 3){
+		bool isDelete = false;
+
         cout << "========================================================="<< endl;
         cout << "안녕하세요 지하철 스케줄 관리 프로그램에 오신걸 환영합니다!" << endl;
         cout<< "1. 로그인하기"<< endl;
@@ -51,7 +53,7 @@ int main()
                 UserTreeNode *log = login(user_root, fname, password);
                 if(log != nullptr){
 					command = 0;
-                    while(command != 4){
+                    while(command != 4 && !isDelete){
                         cout << "========================================================="<< endl;
                         cout << "안녕하세요 " << user2->data.get_name() <<"님 반갑습니다." << endl;
                 
@@ -69,7 +71,8 @@ int main()
                         {
                             case 1:{
                     
-                                while(sub_command != 4){
+                                while(sub_command != 4 && !isDelete){
+
                                     cout << "========================================================="<< endl;
                                     cout << "유저 데이터 관리에 오신걸 환영합니다" <<endl;
                                     cout<< "1. 유저 데이터 찾기"<< endl;
@@ -165,6 +168,7 @@ int main()
                                             cin >> rmname;
                                             delete_node(user_root, hash<string>{}(rmname));
                                             savecheck = 1;
+											isDelete = true;
                                             break;
                                         }
                                         case 4:
