@@ -42,7 +42,7 @@ enum Command {
 
 class MainObj {
 	private:
-		bool savecheck, findcheck, isNewUser;
+		bool savecheck, findcheck;
 
 		char ch;
 
@@ -61,7 +61,6 @@ class MainObj {
 		MainObj() {
 			savecheck = 0;
 			findcheck = 0;
-			isNewUser = false;
 			ch = '0';
 
 			user_root = read_user_data();
@@ -81,10 +80,9 @@ class MainObj {
 		void clear() {
 			if(system("CLS")) system("clear");
 		}
-		void enter(int type=0) {
+		void enter(int type=2) {
 			switch(type) {
 				case 1:
-						ch = fgetc(stdin);
 						cout << "엔터키를 입력해 주세요..";
 						ch = fgetc(stdin);
 					break;
@@ -147,7 +145,6 @@ class MainObj {
 		void printDescription() {
 		}
 		void printWelcomMsg() {
-			cout << "로그인 성공" << endl;
 			cout << "안녕하세요, " << user->data.get_name() << "님. 반갑습니다!" << endl;
 			
 		}
@@ -170,7 +167,7 @@ class MainObj {
 				return true;	
 			}
 		}
-		void tryRegister() {
+		bool tryRegister() {
 			cout << "# 회원가입" <<endl;
 			cout << "회원가입을 진행합니다."<<endl;
 			while(!findcheck){
@@ -189,10 +186,11 @@ class MainObj {
 					savecheck = 1;
 					findcheck = 1;
 
-					isNewUser = true;
 					fname = name;
 
 					cout << "새로운 유저로 등록되었습니다." << endl;
+
+					return true; 
 
 					}else{
 						cout<<"입력하신 출발 역은 노선에 존재하지 않습니다. 재시도 해주세요 \n";
@@ -203,28 +201,116 @@ class MainObj {
 					cout << "다른 아이디를 입력해주세요!\n"; 
 				}
 			}
+
+			return false;
 			
 		}
 		void changeName() {
-			
+			cout << "새로운 아이디(유저 이름)을 입력해주세요." << endl;
+			cout << "> ";
+			cin >> cname;
+			user->data.change_name(cname);
+			cout << "아이디(유저 이름)이 [" << user->data.get_name() <<"] 으로 변경되었습니다."<< endl;
+			savecheck = 1;
+
 		}
 		void changeStation() {
+			cout << "새로운 기준 출발역을 입력해주세요." << endl;
+			cout << "> ";
+			cin >> cstation;
+			if(Metro_check(metro_root,hash<string>{}(cstation))){
+			user->data.change_station_name(cstation);
+			savecheck = 1;
+			cout << "변경되었습니다. " << endl;
+			}else{
+			cout<<"해당 역이 노선에 존재하지 않습니다."<<endl;
+			}
 			
 		}
 		void changePassword() {
+			cout << "구현 예정" << endl;
 			
 		}
 		void unsubscribe() {
+			int recheck;
+			cout << "정말로 탈퇴하시겠습니까?"<< endl;
+			cout << "1. 네" << endl;
+			cout << "2. 아니요" << endl;
+			
+			recheck = accept();
+
+			if(recheck == 1) {
+				delete_node(user_root, hash<string>{}(fname));
+				save_user_data(user_root);
+				cout << "회원 탙퇴가 성공적으로 완료되었습니다. 프로그램을 다시 시작해 주세요." << endl;
+				enter(1);
+				exit(1);
+
+			} else {
+				cout << "취소되었습니다." << endl;
+				return;
+			}
 			
 		}
 		void printSchedule() {
+			user->data.print_schedule();
+			cout << endl;
+			cout << "모든 스케줄을 출력하였습니다." << endl;
 			
 		}
 		void addSchedule() {
-			
+			cout << "새로운 스케줄을 추가합니다." << endl;
+			cout << "스케줄이름: ";
+			cin >> name1;
+			cout<< "스케줄 시작시간 [HHMM : 2400]: ";
+			cin>> time1; 
+			while(cin.fail()==true){
+				cin.clear();
+				cin.ignore(10, '\n');
+				cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+				cin>>time1;
+			}
+			cout<< "스케줄 종료시간 [HHMM : 2400]: ";
+			cin>> time2;
+			while(cin.fail()==true){
+				cin.clear();
+				cin.ignore(10, '\n');
+				cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+				cin>>time2;
+			}
+			cout<< "스케줄 장소: ";
+			cin >>station;
+			if(Metro_check(metro_root,hash<string>{}(station))){
+				time1=convert_time_input(time1);
+				time2=convert_time_input(time2);
+				list <Schedule> li = user->data.get_schedule_list();	
+				if(Find_empty_time(li,time1,time2).second ==1 ){
+				Schedule schedule2 = Schedule(name1, time1, time2, station);
+				user->data.insert_schedule(schedule2);
+				savecheck = 1;
+				cout << "스케줄이 추가되었습니다." << endl;
+				}else{
+					cout<<"입력하신 시간에 이미 스케줄이 꽉 차있습니다."<<endl;
+				}
+			}else{
+				cout<<"도착역이 노선에 존재하지 않습니다. 스케줄 추가가 취소되었습니다."<<endl;}
 		}
 		void deleteSchedule() {
-			
+			cout << "오늘" << user->data.get_name() << "님의 일정입니다." << endl;
+			user->data.print_schedule();                                                             
+			cout << endl;
+			cout << "몇번째 일정을 삭제하시겠습니까? 삭제를 취소하려면 숫자 [0]을 입력해 주세요." << endl;
+			rmschedule = accept();
+
+			if(rmschedule == 0) {
+				cout << "취소되었습니다." << endl;;
+				return;
+			}
+
+			user->data.delete_schedule(rmschedule);
+			cout << "일정을 삭제하였습니다." << endl;
+			savecheck = 1;
+
 		}
 		void findPath() {
 			
@@ -234,7 +320,7 @@ class MainObj {
 		}
 		void logout() {
 			if(savecheck){
-				cout << "변경사항을 저장하시겠습니까?\n1. 저장\n2. 저장하지않음"<< endl;
+				cout << "변경사항을 저장하시겠습니까?\n1. 네\n2. 아니오"<< endl;
 				cout << "> ";
 				cin>> savec;
 				if(savec == 1){
@@ -243,6 +329,7 @@ class MainObj {
 					cout << "저장완료"<< endl;
 				}
 			}
+			savecheck = 0;
 			cout << "로그아웃 되었습니다." << endl;
 		}
 };
@@ -250,6 +337,7 @@ class MainObj {
 int main() {
 	int command = 0;
 	int isFirstLogin;
+	bool isNewUser = false;
 	MainObj mainObj = MainObj();
 
 	mainObj.clear();
@@ -257,26 +345,33 @@ int main() {
 	while(command != startQuit) {
 		isFirstLogin = true;
 
-		mainObj.clear();
-	   	mainObj.printLogo();
-		mainObj.printStartMenu();	
-		command = mainObj.accept();
+		if(!isNewUser) {
+			mainObj.clear();
+			mainObj.printLogo();
+			mainObj.printStartMenu();	
+			command = mainObj.accept();
+		}
+		else {
+			command = startLogin;
+		}
 
 		switch(command) {
 			case startLogin:
-				mainObj.acceptLoginInfo();
+				if(!isNewUser)
+					mainObj.acceptLoginInfo();
 
 				if(mainObj.tryLogin() == false) {
 					cout << "아이디/비밀번호가 잘못되었습니다."<< endl;
-					mainObj.enter(2);
+					mainObj.enter();
 
 				} else {
+					isNewUser = false;
 
 					while(command != mainLogout) {
 						if(isFirstLogin) {
 							isFirstLogin = false;
 							mainObj.printWelcomMsg();
-							mainObj.enter(2);
+							mainObj.enter();
 						}
 
 						mainObj.clear();
@@ -288,24 +383,29 @@ int main() {
 							case mainManageMyInfo:
 								while(command != backFromMyInfo) {
 									mainObj.clear();
+									mainObj.printLogo();
 									mainObj.printManageMyInfoMenu();	
 									command = mainObj.accept();
 
 									switch(command) {
 										case changeName:
 											mainObj.changeName();
+											mainObj.enter();
 											break;
 
 										case changeStation:
 											mainObj.changeStation();
+											mainObj.enter();
 											break;
 
 										case changePassword:
 											mainObj.changePassword();
+											mainObj.enter(1);
 											break;
 
 										case unsubscribe:
 											mainObj.unsubscribe();
+											mainObj.enter(1);
 											break;
 
 										default:
@@ -319,20 +419,24 @@ int main() {
 							case mainManageSchedule:
 								while(command != backFromSchedule) {
 									mainObj.clear();
+									mainObj.printLogo();
 									mainObj.printManageScheduleMenu();	
 									command = mainObj.accept();
 
 									switch(command) {
 										case printSchedule:
 											mainObj.printSchedule();
+											mainObj.enter(1);
 											break;
 
 										case addSchedule:
 											mainObj.addSchedule();
+											mainObj.enter();
 											break;
 
 										case deleteSchedule:
 											mainObj.deleteSchedule();
+											mainObj.enter(1);
 											break;
 
 										default:
@@ -368,8 +472,8 @@ int main() {
 				break;
 
 			case startRegister:
-				mainObj.tryRegister();
-				mainObj.enter();
+				if(mainObj.tryRegister() == true)
+					isNewUser = true;
 				break;
 
 			case startDescription:
@@ -380,7 +484,8 @@ int main() {
 				break;
 
 		}
-		mainObj.clear();
+		if(!isNewUser)
+			mainObj.clear();
 	}
 	command = 0;
 }
