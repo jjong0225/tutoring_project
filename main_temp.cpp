@@ -4,6 +4,7 @@
 #include "data_structure.h"
 #include "file_manager.h"
 #include "algorithm.h"
+#include "time.h"
 
 using namespace std;
 
@@ -49,7 +50,7 @@ class MainObj {
 		int sub_command, subb_command;
 
 		string name, name1, fname, rmname, cname, cstation;
-		string station, station1, station3, password;
+		string station, station1, station3, password, currTime;
 
 		int time1, time2, savec, station2, redata, fdata, rmschedule, fstation;
 
@@ -65,6 +66,27 @@ class MainObj {
 
 			user_root = read_user_data();
 			metro_root = read_metro_data();
+
+			init_graph(metro_root);
+			update_time();
+		}
+		void update_time() {
+			time_t temp_time = time(NULL);		
+			struct tm *pLocal = localtime(&temp_time);
+
+			int tm_hour = pLocal->tm_hour;
+			int tm_min = pLocal->tm_min;
+
+			string tm_min_str;
+
+			if(tm_min < 10) {
+				tm_min_str = "0" + to_string(tm_min);	
+			} else {
+				tm_min_str = to_string(tm_min);	
+			}
+
+			currTime = to_string(tm_hour) + tm_min_str;
+				
 		}
 		int accept() {
 			int command;
@@ -104,7 +126,7 @@ class MainObj {
 			cout << "|\\/| _.._  _. _  _  \\_/_    ._ (_  _|_  _  _|   | _  " << endl;
 			cout << "|  |(_|| |(_|(_|(/_  |(_)|_||  __)(_| |(/_(_||_||(/_" << endl;
 			cout << "              _|" << endl;
-			cout << "                	                   version 0.0" << endl;
+			cout << "                	                version 0.0" << endl;
 			cout << endl;
 			
 		}
@@ -253,14 +275,22 @@ class MainObj {
 			
 		}
 		void printSchedule() {
-			user->data.print_schedule();
-			cout << endl;
+			int i = 1;
+			for(auto schedule : user->data.get_schedule_list()) {
+				cout << "[# " << i++ << "번째 스케줄]" << endl;;
+				schedule.print();
+				cout << endl;
+
+			}
+
+			//user->data.print_schedule();
+			//cout << endl;
 			cout << "모든 스케줄을 출력하였습니다." << endl;
 			
 		}
 		void addSchedule() {
 			cout << "새로운 스케줄을 추가합니다." << endl;
-			cout << "스케줄이름: ";
+			cout << "스케줄 이름: ";
 			cin >> name1;
 			cout<< "스케줄 시작시간 [HHMM : 2400]: ";
 			cin>> time1; 
@@ -299,10 +329,10 @@ class MainObj {
 			cout << "오늘" << user->data.get_name() << "님의 일정입니다." << endl;
 			user->data.print_schedule();                                                             
 			cout << endl;
-			cout << "몇번째 일정을 삭제하시겠습니까? 삭제를 취소하려면 숫자 [0]을 입력해 주세요." << endl;
+			cout << "몇번째 일정을 삭제하시겠습니까? 삭제를 취소하려면 \"-1\" 을 입력해 주세요." << endl;
 			rmschedule = accept();
 
-			if(rmschedule == 0) {
+			if(rmschedule == -1) {
 				cout << "취소되었습니다." << endl;;
 				return;
 			}
@@ -313,9 +343,176 @@ class MainObj {
 
 		}
 		void findPath() {
+			int choice;
+			int now_time;
+			string now_time_str;
+
+			MetroTreeNode* metro1 = search(metro_root, hash<string>{}(user->data.get_station_name()));
+			if(user==NULL||metro1==NULL){cout<<"정보 조회 실패"<<endl; return;}
+			   fstation = metro1->data.get_id();
+
+			cout << "지하철 경로 탐색을 시작합니다." << endl;
+			cout << "1. 현재 시간을 기준으로 탐색하기" << endl;
+			cout << "2. 직접 기준 시간 입력하기" << endl;
+
+			choice = accept();
+
+			if(choice == 1) {
+				update_time();
+				now_time_str = currTime;
+				now_time = stoi(now_time_str);
+
+			} else if (choice == 2) {
+				cout<< "기준 시간을 입력해주세요 [HHMM : 2400]: ";
+				cin>> now_time; 
+				while(cin.fail()==true){
+					cin.clear();
+					cin.ignore(10, '\n');
+					cout<<"시간은 숫자로 입력해주세요.\n재입력 : ";
+					cin>>now_time;
+				}
+				now_time_str = to_string(now_time);
+
+			} else {
+				cout << "잘못된 입력입니다." << endl;
+				return;
+			}
+
+			list <Schedule> list_s=user->data.get_schedule_list();
+			list_s.sort(schedule_cmp);
+			list <Schedule> ::iterator it_s=list_s.begin();
+			for(int i=0;i<list_s.size();i++) {
+				Schedule cur=*it_s;
+				int nx_id=hash<string>{}(cur.get_station_name());
+				if(cur.get_start_time() > now_time){
+
+				clear();
+				printLogo();
+
+				cout << "기준시간: " << now_time_str << endl;
+				cout << endl;
+
+				cout << "[# " << i+1 << "번째 스케줄]" << endl;;
+				cur.print();
+
+				if(nx_id!=fstation){
+				tuple<string,Track_info,Track_info> schedule_result= find_optimized_schedule_path(fstation,nx_id,now_time, cur.get_start_time());
+				if(get<0>(schedule_result)!=" ") {
+					printf("\n[스케줄 조회]\n\n");    
+					cout<<get<0>(schedule_result)<<endl;
+					int option=0;
+					printf("[추가 조회 선택]\n\n");
+					printf("1. 최소 도착 시간 경로 조회\n2. 늦지 않을 최대 출발 시간 경로 조회\n3. 모두 조회\n4. 조회하지 않음\n");
+					option = accept();
+					
+					if(option==1 || option ==3){
+					clear();
+					printLogo();
+
+					printf("[바로 지금 출발 한다면?]\n");
+					search_optimize_schedule(get<1>(schedule_result).path_list,get<1>(schedule_result).departure_time); // 최소 소요 시간 track
+
+					enter(1);
+					}
+					if(option==2 ||option ==3){
+					clear();
+					printLogo();
+
+					printf("[늦어도 이땐 출발해야 해!]\n");
+					search_optimize_schedule(get<2>(schedule_result).path_list,get<2>(schedule_result).departure_time); // 최대 출발 track
+					enter(1);
+					}
+					if(option==4) {
+						printf("다음 스케줄을 조회합니다. 엔터키를 입력해 주세요.\n");
+						enter(3);
+					}
+					}else{cout<<"check input Data"<<endl;}
+				 
+				  }else{
+					cout<<"이전 스케줄과 스케줄 장소가 같습니다."<<endl;
+				}
+				fstation=hash<string>{}(cur.get_station_name());
+				now_time=cur.get_end_time();
+					
+				}
+			it_s++;
+			}
+			cout << "모든 스케줄 출력이 끝났습니다." << endl;
 			
 		}
 		void userMatch() {
+			int choice;
+			int now_time;
+			string now_time_str;
+
+			MetroTreeNode* metro1 = search(metro_root, hash<string>{}(user->data.get_station_name()));
+			if(user==NULL||metro1==NULL){cout<<"정보 조회 실패"<<endl; return;}
+			   fstation = metro1->data.get_id();
+
+			cout << "유저 매칭을 시작합니다." << endl;
+			cout << "1. 현재 시간을 기준으로 매칭하기" << endl;
+			cout << "2. 직접 기준 시간 입력하기" << endl;
+
+			choice = accept();
+
+			if(choice == 1) {
+				update_time();
+				now_time_str = currTime;
+				now_time = stoi(now_time_str);
+
+			} else if (choice == 2) {
+				cout<< "기준 시간을 입력해주세요 [HHMM : 2400]: ";
+				cin>> now_time; 
+				while(cin.fail()==true){
+					cin.clear();
+					cin.ignore(10, '\n');
+					cout<<"시간은 숫자로 입력해주세요.\n재입력 : ";
+					cin>>now_time;
+				}
+				now_time_str = to_string(now_time);
+
+			} else {
+				cout << "잘못된 입력입니다." << endl;
+				return;
+			}
+
+			string name_a,name_b,name;
+			int start_time,end_time;
+			
+			name_a=user->data.get_name();
+			cout<<"상대 유저의 이름: " ;
+			cin>>name_b;
+			cout<<"스케줄 이름: ";
+			cin>>name;
+			cout<<"스케줄 시작 시간: ";
+			cin>>start_time;
+			while(cin.fail()==true){
+				cin.clear();
+				cin.ignore(10, '\n');
+				cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+				cin>>start_time;
+			}
+			cout<< "스케줄 종료 시간: "; 
+			cin>>end_time;
+			while(cin.fail()==true){
+				cin.clear();
+				cin.ignore(10, '\n');
+				cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+				cin>>end_time;
+			}
+			
+			start_time=convert_time_input(start_time);
+			end_time=convert_time_input(end_time);
+			
+			int id_a=hash<string>{}(name_a);
+			int id_b=hash<string>{}(name_b);
+			
+			UserTreeNode*B =search(user_root,id_b);
+			if(B==NULL){cout<<name_b<<"님은 등록되지 않은 회원 입니다.\n"; enter(3); return;}
+
+			bool success= match_schedule(metro_root,user_root,user,B,start_time,end_time,now_time,name);
+			if(success) savecheck = 1;
+
 			
 		}
 		void logout() {
@@ -449,10 +646,12 @@ int main() {
 
 							case mainFindPath:
 								mainObj.findPath();
+								mainObj.enter(1);
 								break;
 
 							case mainUserMatch:
 								mainObj.userMatch();
+								mainObj.enter(1);
 								break;
 							
 							case mainLogout:
