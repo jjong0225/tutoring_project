@@ -165,6 +165,24 @@ class MainObj {
 			
 		}
 		void printDescription() {
+			cout << "스케줄 관리 프로그램에 오신걸 환영합니다 :)" << endl;
+			cout << "지하철 최단거리 탐색 및 중간 역 매칭 등을 통하여 나의 스케줄을 관리 및 경로탐색 뿐만 아니라 다른 유저와 스케줄을 매칭할 수 있습니다!" << endl;
+			cout << "변경된 데이터는 저장되어 다음 프로그램 실행시에도 유지됩니다." << endl;
+			cout << "" << endl;
+
+			cout << endl;
+			cout << "최종자, 제작자, 버전" << endl;
+
+			cout << "[제작자 코멘트 보기]" << endl; 
+
+			cout << "1. 네\n2.아니오" << endl;
+
+			cout << "안종훈: " << endl;
+			cout << "김효민: " << endl;
+			cout << "백성준: " << endl;
+			cout << "박상욱: " << endl;
+			cout << "나보영: " << endl;
+
 		}
 		void printWelcomMsg() {
 			cout << "안녕하세요, " << user->data.get_name() << "님. 반갑습니다!" << endl;
@@ -263,6 +281,7 @@ class MainObj {
 
 			if(recheck == 1) {
 				delete_node(user_root, hash<string>{}(fname));
+				savecheck = 1;
 				save_user_data(user_root);
 				cout << "회원 탙퇴가 성공적으로 완료되었습니다. 프로그램을 다시 시작해 주세요." << endl;
 				enter(1);
@@ -656,7 +675,7 @@ int main() {
 							
 							case mainLogout:
 								mainObj.logout();
-								mainObj.enter();
+								mainObj.enter(1);
 								break;
 							
 							default:
@@ -677,6 +696,7 @@ int main() {
 
 			case startDescription:
 				mainObj.printDescription();
+				mainObj.enter();
 				break;
 
 			default:
