@@ -117,7 +117,7 @@ int main()
 														user2->data.change_station_name(cstation);
 														savecheck = 1;
 														}else{
-															cout<<"바꾼 역이 노선에 존재하지 않습니다.";
+															cout<<"바꾼 역이 노선에 존재하지 않습니다."<<endl;
 														}
 														break;
                                                     
@@ -125,15 +125,40 @@ int main()
                                                     case 3:
                                                     {
                                                         cout << "추가하고 싶은 스케줄을 입력해주세요!" <<endl;
-														cout << "스케줄이름 시작시간 종료시간 도착역은?"<< endl;
-														cin >> name1 >> time1 >> time2 >>station;
+														cout << "스케줄이름 : ";
+														cin >> name1;
+														cout<< " 스케줄 시작시간 :";
+														cin>> time1; 
+														while(cin.fail()==true){
+															cin.clear();
+                        									cin.ignore(10, '\n');
+															cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+															cin>>time1;
+														}
+														cout<< " 스케줄 종료시간 :";
+														cin>> time2;
+														while(cin.fail()==true){
+															cin.clear();
+                        									cin.ignore(10, '\n');
+															cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+															cin>>time2;
+														}
+														cout<< " 스케줄 장소 :";
+														cin >>station;
 														if(Metro_check(metro_root,hash<string>{}(station))){
-														time1=convert_time_input(time1);
-														time2=convert_time_input(time2);
-														Schedule schedule2 = Schedule(name1, time1, time2, station);
-														user2->data.insert_schedule(schedule2);
-														savecheck = 1;}
-														else{cout<<"도착역이 노선에 존재하지 않습니다.";}
+															time1=convert_time_input(time1);
+															time2=convert_time_input(time2);
+															list <Schedule> li = user2->data.get_schedule_list();	
+															if(Find_empty_time(li,time1,time2).second ==1 ){
+															Schedule schedule2 = Schedule(name1, time1, time2, station);
+															user2->data.insert_schedule(schedule2);
+															savecheck = 1;
+															}else{
+																cout<<"입력하신 시간에 이미 스케줄이 꽉 차있습니다."<<endl;
+																break;
+															}
+													    }else{
+															cout<<"도착역이 노선에 존재하지 않습니다."<<endl;}
 														break;
                                                     }
                                                     case 4:
@@ -226,8 +251,12 @@ int main()
                                                     cout<<get<0>(schedule_result)<<endl;
                                                     int option=0;
                                                     printf("--------------------[ Option 선택 ]--------------------\n\n");
-                                                    cout<<"1. 최소 도착 시간 경로 조회  "<<"2. 늦지 않을 최대 출발 시간 경로 조회"<<endl<<"3. 모두 조회 4. 조회하지 않음"<<endl;
+													printf("1. 최소 도착 시간 경로 조회\n2. 늦지 않을 최대 출발 시간 경로 조회\n3. 모두 조회\n4. 조회하지 않음");
+                                                    
                                                     cin>>option;
+													cin.clear();
+                        							cin.ignore(10, '\n');
+													
                                                     if(option==1 || option ==3){
                                                     printf("--------------바로 지금 출발 한다면?---------------\n");
                                                     search_optimize_schedule(get<1>(schedule_result).path_list,get<1>(schedule_result).departure_time); // 최소 소요 시간 track
@@ -278,12 +307,24 @@ int main()
 										cin>>name;
 										cout<<"스케줄 시작 시간: ";
 										cin>>start_time;
+										while(cin.fail()==true){
+											cin.clear();
+                        					cin.ignore(10, '\n');
+											cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+											cin>>start_time;
+										}
 										cout<< "스케줄 종료 시간: "; 
 										cin>>end_time;
-
+										while(cin.fail()==true){
+											cin.clear();
+                        					cin.ignore(10, '\n');
+											cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+											cin>>end_time;
+										}
+                                        
 										start_time=convert_time_input(start_time);
 										end_time=convert_time_input(end_time);
-
+										
 										int id_a=hash<string>{}(name_a);
 										int id_b=hash<string>{}(name_b);
 										

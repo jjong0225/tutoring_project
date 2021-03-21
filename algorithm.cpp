@@ -86,8 +86,10 @@ bool Metro_check(MetroTreeNode * root_ptr, int id){
 }
 
 int convert_time_input(int input){
+	
+	
     string str=to_string(input);
-    char c=str.at(0);
+    char c=str.at(0);	
     if(c=='0'){ //0900 처럼 입력 받을시
         str=str.substr(1);
     }
@@ -178,6 +180,18 @@ void init_graph(MetroTreeNode * root_ptr){
 }
 
 
+int GetTimeWeight(int start ,int end){
+	if(start==0){cout<<"start is zero error";exit(1);}
+	if(end==0){cout<<"end is zero error";exit(1);}
+	it_node=Node_map.find(start);
+	int size= it_node->second.station_ptr.size();
+	for(int i=0;i<size;i++){
+		if(it_node->second.station_ptr[i].first->station_id == end)
+			return it_node->second.station_ptr[i].second.time_weight;
+
+	}
+	return 0;
+}
 
 pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, map<int ,tuple<int,int,int>> path){ 
     
@@ -192,34 +206,50 @@ pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, ma
     vector<pair<int,int>> min_path; 
     stack<string> st_path;
     string path_Str="";
-    
+    int Before=node_id;
+	int isZero=0;
+	int wait=get<2>(path[node_id]);
     int past_rail=get<1>(path[node_id]);
     MetroTreeNode * temp=search(r,node_id);
     if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
-    st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+" 호선)");
+    st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+")");
     if(get<2>(path[node_id])==INF){cout<<"TRACK PATH CAN'T VISITED NODE"; exit(1);}
     min_path.push_back(make_pair(node_id,(get<2>(path[node_id]))));  
-
+	
+		
     while(1){
         node_id=get<0>(path[node_id]);    
         int newrail=get<1>(path[node_id]);     
         if(past_rail!=newrail &&node_id!=departure_id){ 
-            st_path.push("("+to_string(newrail)+"->"+to_string(past_rail)+" 환승) ");           
+            st_path.push(" \n       ("+to_string(newrail)+"->"+to_string(past_rail)+" 환승)");           
             past_rail=newrail;
             min_path.push_back(make_pair(0,(get<2>(path[node_id]))));
+			isZero=1;
+			
         }
       
         if(node_id==departure_id){ 
             temp=search(r,node_id);
              if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
-            st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+"호선)");
-            min_path.push_back(make_pair(node_id,get<2>(path[node_id])));          
+             if(isZero) st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+") "+to_string(GetTimeWeight(node_id,Before)));
+             else {
+				  st_path.push(temp->data.get_station_name()+"("+to_string(past_rail)+") ["+to_string(GetTimeWeight(node_id,Before)) +"분 소요]");
+				  isZero=0;}
+			 min_path.push_back(make_pair(node_id,get<2>(path[node_id]))); 
+			Before=node_id;
+			
             break;}
         else{
               temp=search(r,node_id);
                if(temp==NULL){cout<<"TRACK PATH ERROR CAN'T FIND NODE"; exit(1); }
-              st_path.push(temp->data.get_station_name()+"("+to_string(get<1>(path[node_id]))+"호선)");
-              min_path.push_back(make_pair(node_id,get<2>(path[node_id]))); }                     
+              
+              min_path.push_back(make_pair(node_id,get<2>(path[node_id]))); 
+		      if(isZero) st_path.push(temp->data.get_station_name()+"("+to_string(get<1>(path[node_id]))+")");
+			  else  st_path.push(temp->data.get_station_name()+"("+to_string(get<1>(path[node_id]))+") ["+to_string(GetTimeWeight(node_id,Before)) +"분 소요]");
+			  isZero=0;	  
+			  Before=node_id;
+			  wait=get<2>(path[node_id]);
+			  }                     
     }
 
     reverse(min_path.begin(),min_path.end());
@@ -424,7 +454,6 @@ int find_fair_station(map<int,int>a, map<int,int>b){
   
     pair<int,int> min_node=make_pair(0xfffff,0);
     int size=a.size();
-	cout<<a.size()<<b.size()<<endl;
     map<int, int> :: iterator it_a=a.begin();
     map<int, int> :: iterator it_b=b.begin();
     for(int i=0;i<size;i++){
@@ -483,6 +512,35 @@ pair<int, pair<string,vector<pair<int,int>>>>find_max_departure_time(int A_stati
     return make_pair(gap.first,track_optimize_path);
 }
 
+pair<Schedule *,int> Find_empty_time(list <Schedule> li_schedule, int meeting_start, int meeting_end ){
+	list<Schedule> :: iterator lts = li_schedule.begin();
+	Schedule * before=NULL;
+	  for(int i=0;i<li_schedule.size();i++){
+        int start=lts->get_start_time();
+        int end=lts->get_end_time();
+        if(meeting_start >=start && meeting_start <=end){  //이전 스케줄과 시작시간이 겹침
+            return make_pair(&(*lts),-1) ;
+            }
+        else if(meeting_end >=start && meeting_end <=end){ // 다음 스케줄과 겹침
+            return make_pair(&(*lts),0);
+        }else if(meeting_end < start ){ //미팅 이후의 시간
+            continue;
+        }else{
+			 if(before==NULL){
+				before=&(*lts);
+			 }else{
+                 if(meeting_start - before->get_end_time() > meeting_start - end){ //미팅 시간과 최대한 가까운 스케줄
+				   before=&(*lts);
+				  }
+               }
+           }
+        lts++;
+     }
+	 return make_pair(before,1); // meeting start 시간 이전의 스케줄을 리턴
+	// 뒤 int  -1: 꽉찬 시간   0: 시작시간은 괜찮으나 종료시간이 다음 시작 시간과 겹침    1: 성공 
+	
+ }
+
 
 bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode *A,UserTreeNode *B, int meeting_start, int meeting_end, int now_time, string name){
 	
@@ -494,44 +552,28 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	int B_station;
 	init_graph(metro_r);
 	
-    list<Schedule> li = A->data.get_schedule_list(); // A스케줄 가능한지 확인
-	list<Schedule> :: iterator lts = li.begin();
-    for(int i=0;i<li.size();i++){
-        int start=lts->get_start_time();
-        int end=lts->get_end_time();
-        if(meeting_start >=start && meeting_start <=end){  //이전 스케줄과 시작시간이 겹침
-            cout<<print_HHMM(to_string(meeting_start))<<" 는 이미 스케줄이 꽉 찬 시간입니다!"<<endl;
-            lts->print();
-            return false ;
-            }
-        else if(meeting_end >=start && meeting_end <=end){ // 다음 스케줄과 겹침
-            cout<<"다음 스케줄이 있는 시간입니다!  "<<endl;
-            lts->print();
-            cout<<print_HHMM(to_string(start))<<"  이전 시간으로 일정을 조율 해주세요"<<endl;
-            return false;
-        }else if(meeting_end < start ){ //미팅 이후의 시간
-            continue;
-        }else{
-			 if(before==NULL){
-				before=&(*lts);
-				
-			}else{
-            if(meeting_start - before->get_end_time() > meeting_start - end){ //미팅 시간과 최대한 가까운 스케줄
-          
-			before=&(*lts);
-            A_place=hash<string>{}(lts->get_station_name());
-            A_time=end;
-          
-				}
-            }
-        }
-        lts++;
-    }
+    pair<Schedule *, int> A_result=Find_empty_time(A->data.get_schedule_list(),meeting_start,meeting_end);
+	
+	if(A_result.second ==-1 ){
+		cout<<print_HHMM(to_string(meeting_start))<< "~" << print_HHMM(to_string(meeting_end))<<" 는 이미 스케줄이 꽉 찬 시간입니다!"<<endl;
+		cout<< "스케줄 이름: "<<A_result.first->get_name() <<endl;
+		cout<< "스케줄 시작시간: "<<A_result.first->get_start_time() <<endl;
+		cout<< "스케줄 종료시간: "<<A_result.first->get_end_time() <<endl;
+		return false;
+	}else if(A_result.second ==0){
+		cout<<"다음 스케줄이 있는 시간입니다!  "<<endl;
+        return false;
+	}else{
+		before=A_result.first;
+	}
 	
 	if(before!=NULL){
 	char op;
     cout<<A->data.get_name()<<" USER님의 이전 스케줄을 조회하시겠습니끼? (Y/N)"<<endl;
 	cin>>op;
+	cin.clear();
+	cin.ignore(10, '\n');	
+                        						
 	if(op=='Y'||op=='y'){
 		 cout<<A->data.get_name()<<" USER님의 이전 스케줄 "<<endl;
    		 before->print();}
@@ -542,36 +584,15 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	}
     
 	bool check=true;
+	pair<Schedule *, int> B_result=Find_empty_time(B->data.get_schedule_list(),meeting_start,meeting_end);
 	
-	li=B->data.get_schedule_list();
-	lts = li.begin();
-
-      for(int i=0;i<li.size();i++){
-        int start=lts->get_start_time();
-        int end=lts->get_end_time();
-        if(meeting_start >=start && meeting_start <=end){ 
-           check=false;
-           break;
-            }
-        else if(meeting_end >=start && meeting_end <=end){
-            check=false;
-             break;
-        }else if( meeting_end < start){ //미팅 이후의 시간
-            continue;
-        }else{
-            if(before2==NULL){
-			    before2=&(*lts);
-			}
-            else{
-            if(meeting_start - before2->get_end_time() > meeting_start - end){
-			before2=&(*lts);
-            B_place=hash<string>{}(lts->get_station_name());
-            B_time=end;}
-            	
-            }
-        }
-        lts++;
-    }
+	if(B_result.second ==-1 ){
+		check= false;
+	}else if(A_result.second ==0){
+        check= false;
+	}else{
+		before2=B_result.first;
+	}
 
     if(!check){ cout<<B->data.get_name()<<" USER님의 스케줄이 꽉 찬 시간입니다. 다른 시간에 스케줄을 잡아주세요"<<endl; return false ;}
 	
@@ -580,7 +601,6 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	}else{
 		cout<<B->data.get_name()<<" USER님의 스케줄이 비었습니다."<<endl;
 		B_station=hash<string>{}(B->data.get_station_name());
-		//cout<<B->data.get_station_name()<<endl;
 	}
 	if(search(r,A_station)==NULL){cout<<"A NONE"<<endl;return false;}
 	if(search(r,B_station)==NULL){cout<<"B NONE"<<endl;return false;}
@@ -589,6 +609,7 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	cout<<B->data.get_name()<< "USER님의 출발 위치 : "<<search(r,B_station)->data.get_station_name() <<endl;
     
 	if(A_station == B_station){
+		 cout<< "두 USER의 출발 위치가 같습니다! 동일 장소로 매칭되었습니다."<<endl;
 		 MetroTreeNode *temp_fair=search(r,A_station);
 		 cout<<"------------------매칭된 스케줄을 확인해 주세요-------------------"<<'\n'<<'\n';
    		 cout<<"스케줄 장소 [ "<<temp_fair->data.get_station_name()<<" ] "<<endl;
@@ -623,7 +644,7 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 		B_dijkstra= trans_dijkstra(B_station ,A_station ,before2->get_end_time());
     else  B_dijkstra= trans_dijkstra(B_station ,A_station ,default_time);
       
-	
+	cout<<"두 USER의 위치를 파악하여 공정한 중간 역을 찾아드립니다!"<<endl;
     int fair = find_fair_station(A_dijkstra.first,B_dijkstra.first); //목적지 검색
    
 	
@@ -633,10 +654,8 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	   A_dijkstra= trans_dijkstra(A_station ,fair ,before->get_end_time());
  	  else{ 
 		 A_dijkstra= trans_dijkstra(A_station ,B_station ,default_time);
-		
 		 A_df=true;}
-	  
-	   
+	  	   
 	   pair<string,vector<pair<int,int>>> A_path=track_path(A_station ,fair ,A_dijkstra.second);
 	   int destination1=A_path.second.size()-1;
 	   int min_arrive_time_A=A_path.second[destination1].second;
@@ -646,7 +665,7 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 
 
    	   if(min_arrive_time_A > meeting_start){
-			cout<<"예상도착 시간  " +print_HHMM(to_string(min_arrive_time_A))<<endl;
+			cout<<"예상 도착 시간  " +print_HHMM(to_string(min_arrive_time_A))<<endl;
        		cout<<"요청한 매칭 시간까지 도착할 수 없습니다. 다른 시간에 스케줄을 잡아주세요"<<endl;
         	return false;
    		}
@@ -672,7 +691,7 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 			    else  min_arrive_time_B += default_time;
 
 			  if(min_arrive_time_B > meeting_start){
-				cout<<"예상도착 시간  " +print_HHMM(to_string(min_arrive_time_B))<<endl;
+				cout<<"예상 도착 시간  " +print_HHMM(to_string(min_arrive_time_B))<<endl;
 				cout<<"상대방이 요청한 매칭 시간까지 도착할 수 없습니다. 다른 시간에 스케줄을 잡아주세요"<<endl;
 				return false;
 				}
@@ -736,12 +755,12 @@ tuple<string,Track_info,Track_info> find_optimized_schedule_path(int A_station, 
     
     int destination=track_optimize_path.second.size()-1;
 
-    string minimum_schecdule_path_Str="최소 소요 시간 : "+print_HHMM(to_string(track_optimize_path.second[destination].second))+'\n';
+    string minimum_schecdule_path_Str="대기 시간을 포함한 총 소요 시간 : "+print_HHMM(to_string(track_optimize_path.second[destination].second))+'\n';
     string schedule_transfer_num_str="환승 횟수 : "+to_string(transfer_num(get<1>(track_optimize_path)))+'\n';
     string schedule_Path_str="Path : "+get<0>(track_optimize_path)+'\n';
     
     int min_arrive_time= track_optimize_path.second[destination].second + estimated_departure ;
-    string min_arrive_time_str="최소 도착 시간 : "+print_HHMM(convert_time(min_arrive_time))+'\n';
+    string min_arrive_time_str="지금 출발하면 도착하는 시간 : "+print_HHMM(convert_time(min_arrive_time))+'\n';
      
     pair<int, pair<string,vector<pair<int,int>>>> max_time= find_max_departure_time(A_station,B_station,estimated_departure,estimated_arrive); 
     string max_Path_str="Path : "+get<1>(max_time).first+'\n';
