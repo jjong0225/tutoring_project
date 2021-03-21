@@ -180,7 +180,7 @@ class MainObj {
 			cout << "안종훈: " << endl;
 			cout << "김효민: " << endl;
 			cout << "백성준: " << endl;
-			cout << "박상욱: " << endl;
+			cout << "박상욱: 악명높은 포인터와 메모리는 명성에 걸맞게 역시 구현이 어려웠고, 객체와 깃이 처음에는 낯설었지만 프로젝트를 진행하면서 자신감이 생겼습니다!" << endl;
 			cout << "나보영: " << endl;
 
 		}
@@ -268,8 +268,42 @@ class MainObj {
 			
 		}
 		void changePassword() {
-			cout << "구현 예정" << endl;
-			
+			string currPW, newPW1, newPW2;
+			int pwQuery;
+			while(true){
+				cout << "기존 비밀번호를 입력해주세요." << endl;
+				cin >> currPW;
+				if(user->data.get_password()==currPW) break;
+				else{
+					cout << "비밀번호가 일치하지 않습니다." << endl;
+					cout << "1. 재입력" << endl;
+					cout << "2. 뒤로가기" << endl;
+					cin >> pwQuery;
+					if(pwQuery == 2) return;
+					else continue;
+				}
+			}
+			while(true){
+				cout << "새로운 비밀번호를 입력해주세요." << endl;
+				cin >> newPW1;
+				cout << "새로운 비밀번호를 다시 입력해주세요." << endl;
+				cin >> newPW2;
+				if(newPW2 == newPW1){
+					user->data.change_password(newPW1);
+					savecheck = true;
+					cout << "비밀번호가 변경되었습니다!" << endl;
+					enter(3);
+					return;
+				}
+				else{
+					cout << "새로운 비밀번호가 일치하지 않습니다." << endl;
+					cout << "1. 재입력" << endl;
+					cout << "2. 뒤로가기" << endl;
+					cin >> pwQuery;
+					if(pwQuery == 2) return;
+					else continue;
+				}
+			}
 		}
 		void unsubscribe() {
 			int recheck;

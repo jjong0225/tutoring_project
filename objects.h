@@ -49,6 +49,7 @@ class User
 		void change_name(string);
 		void delete_schedule(int);
 		void change_station_name(string);
+		void change_password(string);
 };
 
 class Departure

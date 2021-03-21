@@ -115,6 +115,10 @@ void User::change_station_name(string new_name)
 {
 	this -> station_name = new_name;
 }
+void User::change_password(string newPW)
+{
+	this -> password = newPW;
+}
 
 // Metro Class
 
