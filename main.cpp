@@ -40,7 +40,6 @@ enum Command {
 
 	
 };
-
 class MainObj {
 	private:
 		bool savecheck, findcheck;
@@ -55,6 +54,7 @@ class MainObj {
 		int time1, time2, savec, station2, redata, fdata, rmschedule, fstation;
 
 		UserTreeNode* user;
+
 		UserTreeNode* user_root;
 		MetroTreeNode* metro_root;
 
@@ -272,21 +272,24 @@ class MainObj {
 			int pwQuery;
 			while(true){
 				cout << "기존 비밀번호를 입력해주세요." << endl;
+				cout << "> ";
 				cin >> currPW;
 				if(user->data.get_password()==currPW) break;
 				else{
 					cout << "비밀번호가 일치하지 않습니다." << endl;
 					cout << "1. 재입력" << endl;
 					cout << "2. 뒤로가기" << endl;
-					cin >> pwQuery;
+					pwQuery = accept();
 					if(pwQuery == 2) return;
 					else continue;
 				}
 			}
 			while(true){
 				cout << "새로운 비밀번호를 입력해주세요." << endl;
+				cout << "> ";
 				cin >> newPW1;
 				cout << "새로운 비밀번호를 다시 입력해주세요." << endl;
+				cout << "> ";
 				cin >> newPW2;
 				if(newPW2 == newPW1){
 					user->data.change_password(newPW1);
@@ -299,7 +302,7 @@ class MainObj {
 					cout << "새로운 비밀번호가 일치하지 않습니다." << endl;
 					cout << "1. 재입력" << endl;
 					cout << "2. 뒤로가기" << endl;
-					cin >> pwQuery;
+					pwQuery = accept();
 					if(pwQuery == 2) return;
 					else continue;
 				}
@@ -317,7 +320,7 @@ class MainObj {
 				delete_node(user_root, hash<string>{}(fname));
 				savecheck = 1;
 				save_user_data(user_root);
-				cout << "회원 탙퇴가 성공적으로 완료되었습니다. 프로그램을 다시 시작해 주세요." << endl;
+				cout << "회원 탙퇴가 성공적으로 완료되었습니다. 프로그램을 다시 실행해 주세요." << endl;
 				enter(1);
 				exit(1);
 
@@ -577,11 +580,18 @@ class MainObj {
 					save_user_data(user_root);
 					savecheck = 0;
 					cout << "저장완료"<< endl;
+					cout << "로그아웃 되었습니다" << endl;
+				}
+				else {
+					cout << "변경사항을 삭제 하였습니다. 프로그램을 다시 실행해 주세요." << endl;
+					enter();
+					exit(1);
+					
 				}
 			}
-			savecheck = 0;
-			cout << "로그아웃 되었습니다." << endl;
+
 		}
+
 };
 
 int main() {
@@ -601,6 +611,7 @@ int main() {
 			mainObj.printStartMenu();	
 			command = mainObj.accept();
 		}
+
 		else {
 			command = startLogin;
 		}
