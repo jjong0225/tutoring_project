@@ -18,7 +18,7 @@ MetroTreeNode *r;
 map<int,Node> Node_map;
 map<int, Node> ::iterator it_node = Node_map.begin();
 
-UserTreeNode * login(UserTreeNode *root, string username, string password){
+UserTreeNode * login(UserTreeNode *root, string username, string password){ // 로그인 함수
     UserTreeNode * current = search(root, hash<string>{}(username));
     if(current == nullptr)
         return nullptr;
@@ -27,7 +27,7 @@ UserTreeNode * login(UserTreeNode *root, string username, string password){
     else return nullptr;
 }
 
-string convert_time(int time){
+string convert_time(int time){ // int형 시간을 string형 time으로 변형
     
     string time_Str=to_string(time);
     if(time%100>=60){
@@ -38,14 +38,14 @@ string convert_time(int time){
     return time_Str;
 }
 
-int min_to_hour(int time){
+int min_to_hour(int time){ //minute to hour
     int hour=time/60;
     int min=time%60;
     return hour*100+min;
 }
 
 
-int cal_time(int input_time){
+int cal_time(int input_time){ // calculate time
     if(input_time%100!=0){
         input_time-=100;
         input_time+=60;
@@ -56,13 +56,13 @@ int cal_time(int input_time){
     return input_time;
 }
 
-int hour_to_min(int time){
+int hour_to_min(int time){ // hour to minute
     int hour=time/100;
     int min=time%100;
     return hour*60+min;
 }
 
-string print_HHMM(string val){
+string print_HHMM(string val){ // print time with HHMM format
     int temp=stoi(val);
     int hour=temp/100;
     int min=temp%100;
@@ -73,21 +73,19 @@ string print_HHMM(string val){
     return time;
 }
 
-bool schedule_cmp(Schedule  &a, Schedule  &b){
+bool schedule_cmp(Schedule  &a, Schedule  &b){ // compare schedule
 	if(a.get_start_time() <= b.get_start_time())
         return true; 
     else
         return false;
 }
 
-bool Metro_check(MetroTreeNode * root_ptr, int id){
+bool Metro_check(MetroTreeNode * root_ptr, int id){ // check if there are metro which metro.id is id
     if(search(root_ptr,id)==NULL) return false;
     else return true;
 }
 
-int convert_time_input(int input){
-	
-	
+int convert_time_input(int input){ //convert int time to string time
     string str=to_string(input);
     char c=str.at(0);	
     if(c=='0'){ //0900 처럼 입력 받을시
@@ -96,7 +94,7 @@ int convert_time_input(int input){
     return stoi(str);
 }
 
-void init_graph(MetroTreeNode * root_ptr){
+void init_graph(MetroTreeNode * root_ptr){ // travle every node in the R-B tree and make graph with that 
 	 r=root_ptr;
      MetroTreeNode *root_node=r;
      queue< MetroTreeNode * > q;
@@ -180,7 +178,7 @@ void init_graph(MetroTreeNode * root_ptr){
 }
 
 
-int GetTimeWeight(int start ,int end){
+int GetTimeWeight(int start ,int end){ // retrun time weight 
 	if(start==0){cout<<"start is zero error";exit(1);}
 	if(end==0){cout<<"end is zero error";exit(1);}
 	it_node=Node_map.find(start);
@@ -193,7 +191,7 @@ int GetTimeWeight(int start ,int end){
 	return 0;
 }
 
-pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, map<int ,tuple<int,int,int>> path){ 
+pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, map<int ,tuple<int,int,int>> path){ // track path
     
 	if(departure_id == arrive_id){
 		cout<<"목적지가 현재 위치와 같습니다!"<<endl;
@@ -267,7 +265,7 @@ pair<string,vector<pair<int,int>>> track_path(int departure_id,int arrive_id, ma
 
 
 
-pair<int,int> find_min_path(int present_station,int next_station,int start_time,int op){
+pair<int,int> find_min_path(int present_station,int next_station,int start_time,int op){ // find optimal path
 
    int wait_time=-1;
    int min_departure=0xfffff;
@@ -421,7 +419,7 @@ int transfer_num(vector<pair<int,int>>Track){
     return cnt;
 }
 
-void search_optimize_schedule(vector<pair<int,int>> search_line, int departure_time){
+void search_optimize_schedule(vector<pair<int,int>> search_line, int departure_time){ // print all schdule and find the best path
     int line=-1;
     for(int i=0;i< search_line.size();i++){
         if(search_line[i].first==0){
@@ -450,7 +448,7 @@ void search_optimize_schedule(vector<pair<int,int>> search_line, int departure_t
     }
 }
 
-int find_fair_station(map<int,int>a, map<int,int>b){
+int find_fair_station(map<int,int>a, map<int,int>b){ // find fair station for both A and B
   
     pair<int,int> min_node=make_pair(0xfffff,0);
     int size=a.size();
@@ -512,7 +510,7 @@ pair<int, pair<string,vector<pair<int,int>>>>find_max_departure_time(int A_stati
     return make_pair(gap.first,track_optimize_path);
 }
 
-pair<Schedule *,int> Find_empty_time(list <Schedule> li_schedule, int meeting_start, int meeting_end ){
+pair<Schedule *,int> Find_empty_time(list <Schedule> li_schedule, int meeting_start, int meeting_end ){ // Find empty time
 	list<Schedule> :: iterator lts = li_schedule.begin();
 	Schedule * before=NULL;
 	  for(int i=0;i<li_schedule.size();i++){
@@ -542,7 +540,7 @@ pair<Schedule *,int> Find_empty_time(list <Schedule> li_schedule, int meeting_st
  }
 
 
-bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode *A,UserTreeNode *B, int meeting_start, int meeting_end, int now_time, string name){
+bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode *A,UserTreeNode *B, int meeting_start, int meeting_end, int now_time, string name){ // match fair station for both user A and B
 	
     int A_place,B_place,A_time,B_time;
     Schedule * before=NULL;
