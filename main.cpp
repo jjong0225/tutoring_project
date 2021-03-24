@@ -1,5 +1,14 @@
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)	
+	#include "windows.h"
+#else
+	#include "termios.h"
+	#include "unistd.h"
+#endif
+#include <iostream>
+#include <vector>
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "objects.h"
 #include "data_structure.h"
 #include "file_manager.h"
@@ -91,13 +100,59 @@ class MainObj {
 		int accept() { // command를 받는다, command외의 값을 입력받으면 오류비트를 삭제하고 입력스트림을 비워준다.
 			int command;
 
-			cout << "> ";
 			cin >> command;
 
 			cin.clear();
 			cin.ignore(10, '\n'); 
 			
 			return command;
+		}
+		string acceptPwd() {
+			string s;
+			char ch_arr[100] = {'\0',};
+			int i=0;
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)	
+
+			HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
+			DWORD mode = 0;
+			GetConsoleMode(hStdin, &mode);
+			SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
+
+			while((ch[i]=getc(stdin))!='\n')
+				{
+					cout<<"*";
+					i++;
+				}
+
+			SetConsoleMode(hStdin, mode);
+
+
+#else
+			struct termios oldt, newt;
+
+
+			tcgetattr(STDIN_FILENO, &oldt);
+			newt = oldt;
+			newt.c_lflag &= ~(ICANON | ECHO);
+
+			tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+			while((ch_arr[i]=getc(stdin))!='\n')
+				{
+					cout<<"*";
+					i++;
+				}
+
+			tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+
+#endif
+
+			cout << endl;
+			s = string(ch_arr, i);
+			return s;
+			
 		}
 		void clear() { // System call clear호출
 			if(system("CLS")) system("clear");
@@ -210,7 +265,9 @@ class MainObj {
 				cout << "아이디(유저 이름): ";
 				cin >> fname;
 				cout << "비밀번호: ";
-				cin >> password;
+				enter(3);
+				password = acceptPwd();
+
 
 		}
 		bool tryLogin() { // 받은 로그인 정보를 토대로 로그인
@@ -290,7 +347,7 @@ class MainObj {
 			while(true){
 				cout << "기존 비밀번호를 입력해주세요." << endl;
 				cout << "> ";
-				cin >> currPW;
+				currPW = acceptPwd();
 				if(user->data.get_password()==currPW) break;
 				else{
 					cout << "비밀번호가 일치하지 않습니다." << endl;
@@ -304,10 +361,10 @@ class MainObj {
 			while(true){
 				cout << "새로운 비밀번호를 입력해주세요." << endl;
 				cout << "> ";
-				cin >> newPW1;
+				newPW1 = acceptPwd();
 				cout << "새로운 비밀번호를 다시 입력해주세요." << endl;
 				cout << "> ";
-				cin >> newPW2;
+				newPW2 = acceptPwd();
 				if(newPW2 == newPW1){
 					user->data.change_password(newPW1);
 					savecheck = true;
@@ -648,7 +705,7 @@ int main() {
 						if(isFirstLogin) {
 							isFirstLogin = false;
 							mainObj.printWelcomMsg();
-							mainObj.enter();
+							mainObj.enter(1);
 						}
 
 						mainObj.clear();
