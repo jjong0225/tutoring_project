@@ -11,6 +11,7 @@ using namespace std;
 const int NUM_OF_STATION = 100;
 Node STATION_NODE[NUM_OF_STATION] = {0};
 
+// main loop를 위한 커맨드 목록
 enum Command {
 	// for start menu
 	startLogin = 1,
@@ -36,10 +37,9 @@ enum Command {
 	printSchedule = 1,
 	addSchedule = 2,
 	deleteSchedule = 3,	
-	backFromSchedule = 4
-
-	
+	backFromSchedule = 4	
 };
+// 프로그램을 위한 정보, 함수를 저장하는 객체
 class MainObj {
 	private:
 		bool savecheck, findcheck;
@@ -64,13 +64,13 @@ class MainObj {
 			findcheck = 0;
 			ch = '0';
 
-			user_root = read_user_data();
-			metro_root = read_metro_data();
+			user_root = read_user_data(); // Json file로 부터 user data를 메모리로 읽어 Tree로 저장함
+			metro_root = read_metro_data(); // Json file로 부터 metro data를 메모리로 읽어 Tree로 저장함
 
-			init_graph(metro_root);
-			update_time();
+			init_graph(metro_root); // 지하철간의 관계를 표현하기 위해 Tree구조에서 Graph를 만듦
+			update_time(); // 현재 시간을 가져옴
 		}
-		void update_time() {
+		void update_time() { // 현재 시간을 가져옴
 			time_t temp_time = time(NULL);		
 			struct tm *pLocal = localtime(&temp_time);
 
@@ -88,7 +88,7 @@ class MainObj {
 			currTime = to_string(tm_hour) + tm_min_str;
 				
 		}
-		int accept() {
+		int accept() { // command를 받는다, command외의 값을 입력받으면 오류비트를 삭제하고 입력스트림을 비워준다.
 			int command;
 
 			cout << "> ";
@@ -99,10 +99,10 @@ class MainObj {
 			
 			return command;
 		}
-		void clear() {
+		void clear() { // System call clear호출
 			if(system("CLS")) system("clear");
 		}
-		void enter(int type=2) {
+		void enter(int type=2) { 
 			switch(type) {
 				case 1:
 						cout << "엔터키를 입력해 주세요..";
@@ -121,7 +121,7 @@ class MainObj {
 			}
 			
 		}
-		void printLogo() {
+		void printLogo() { // 로고 호출
 			cout << "                                __                   " << endl;
 			cout << "|\\/| _.._  _. _  _  \\_/_    ._ (_  _|_  _  _|   | _  " << endl;
 			cout << "|  |(_|| |(_|(_|(/_  |(_)|_||  __)(_| |(/_(_||_||(/_" << endl;
@@ -130,7 +130,7 @@ class MainObj {
 			cout << endl;
 			
 		}
-		void printStartMenu() {
+		void printStartMenu() { // 로그인, 회원가입을 관리하는 첫번째 메뉴 
 			cout << "[시작 메뉴]" << endl;
 			cout << "1. 로그인" << endl;
 			cout << "2. 회원가입" << endl;
@@ -138,7 +138,7 @@ class MainObj {
 			cout << "4. 프로그램 종료" << endl;
 			
 		}
-		void printMainMenu() {
+		void printMainMenu() { // 로그인 된 유저의 기능을 실행해주는 두번째 메뉴 
 			cout << "[메인 메뉴]" << endl;
 			cout << "1. 내 정보 관리" << endl;
 			cout << "2. 스케줄 관리" << endl;
@@ -147,7 +147,7 @@ class MainObj {
 			cout << "5. 로그아웃" << endl;
 			
 		}
-		void printManageMyInfoMenu() {
+		void printManageMyInfoMenu() { //로그인 된 유저의 정보를 수정하는 세번째 메뉴 
 			cout << "[내 정보 관리]" << endl;
 			cout << "1. 이름 변경" << endl;
 			cout << "2. 기준 출발역 변경" << endl;
@@ -156,7 +156,7 @@ class MainObj {
 			cout << "5. 뒤로가기" << endl;
 			
 		}
-		void printManageScheduleMenu() {
+		void printManageScheduleMenu() { // 스케쥴 출력 
 			cout << "[스케줄 관리]" << endl;
 			cout << "1. 스케줄 출력" << endl;
 			cout << "2. 스케줄 추가" << endl;
@@ -164,7 +164,7 @@ class MainObj {
 			cout << "4. 뒤로가기" << endl;
 			
 		}
-		void printDescription() {
+		void printDescription() { // 프로그램의 개요 및 코맨트를 출력한다
 			cout << "스케줄 관리 프로그램에 오신걸 환영합니다 :)" << endl;
 			cout << "지하철 최단거리 탐색 및 중간 역 매칭 등을 통하여 나의 스케줄을 관리 및 경로탐색 뿐만 아니라 다른 유저와 스케줄을 매칭할 수 있습니다!" << endl;
 			cout << "변경된 데이터는 저장되어 다음 프로그램 실행시에도 유지됩니다." << endl;
@@ -177,7 +177,7 @@ class MainObj {
 
 			cout << "1. 네\n2.아니오" << endl;
 
-			cout << "안종훈: " << endl;
+			cout << "안종훈: 멘티분들이 아이디어도 많이 내주시고 프로젝트에 적극적으로 참여해주셔서 너무 감사하고 죄송했습니다. 저 또한 전공의 측면에서도, 전공 외의 측면에서도 많은 것을 멘티분들게 배우는 좋은 경험이었습니다. 감사합니다!" << endl;
 			cout << "김효민: 처음 배우는 것이 많아 순탄하지는 않았지만, 여러 자료구조를 배우고 직접 응용하면서 프로그래밍 실력을 키울 수 있었고, 협업 프로젝트라는 좋은 경험을 할 수 있었습니다." << endl;
 			cout << "백성준: " << endl;
 			cout << "박상욱: 악명높은 포인터와 메모리는 명성에 걸맞게 역시 구현이 어려웠고, 객체와 깃이 처음에는 낯설었지만 프로젝트를 진행하면서 자신감이 생겼습니다!" << endl;
@@ -192,11 +192,11 @@ class MainObj {
 				
 			*/	
 		}
-		void printWelcomMsg() {
+		void printWelcomMsg() { // 웰컴 메세지 출력
 			cout << "안녕하세요, " << user->data.get_name() << "님. 반갑습니다!" << endl;
 			
 		}
-		void acceptLoginInfo() {
+		void acceptLoginInfo() { // 로그인 정보 받기
 				cout << "# 로그인" << endl;	
 				cout << "아이디(유저 이름): ";
 				cin >> fname;
@@ -204,7 +204,7 @@ class MainObj {
 				cin >> password;
 
 		}
-		bool tryLogin() {
+		bool tryLogin() { // 받은 로그인 정보를 토대로 로그인
 			UserTreeNode *user = search(user_root, hash<string>{}(fname));
 			UserTreeNode *log = login(user_root, fname, password);
 
@@ -215,7 +215,7 @@ class MainObj {
 				return true;	
 			}
 		}
-		bool tryRegister() {
+		bool tryRegister() { // 회원가입
 			cout << "# 회원가입" <<endl;
 			cout << "회원가입을 진행합니다."<<endl;
 			while(!findcheck){
@@ -253,7 +253,7 @@ class MainObj {
 			return false;
 			
 		}
-		void changeName() {
+		void changeName() { // 이름 수정
 			cout << "새로운 아이디(유저 이름)을 입력해주세요." << endl;
 			cout << "> ";
 			cin >> cname;
@@ -262,7 +262,7 @@ class MainObj {
 			savecheck = 1;
 
 		}
-		void changeStation() {
+		void changeStation() { // 기준 출발역 수정
 			cout << "새로운 기준 출발역을 입력해주세요." << endl;
 			cout << "> ";
 			cin >> cstation;
@@ -275,7 +275,7 @@ class MainObj {
 			}
 			
 		}
-		void changePassword() {
+		void changePassword() { // 비밀번호 변경
 			string currPW, newPW1, newPW2;
 			int pwQuery;
 			while(true){
@@ -316,7 +316,7 @@ class MainObj {
 				}
 			}
 		}
-		void unsubscribe() {
+		void unsubscribe() { // 탈퇴(유저 삭제)
 			int recheck;
 			cout << "정말로 탈퇴하시겠습니까?"<< endl;
 			cout << "1. 네" << endl;
@@ -338,7 +338,7 @@ class MainObj {
 			}
 			
 		}
-		void printSchedule() {
+		void printSchedule() { // 모든 스케쥴 정보를 출력한다
 			int i = 1;
 			for(auto schedule : user->data.get_schedule_list()) {
 				cout << "[# " << i++ << "번째 스케줄]" << endl;;
@@ -352,7 +352,7 @@ class MainObj {
 			cout << "모든 스케줄을 출력하였습니다." << endl;
 			
 		}
-		void addSchedule() {
+		void addSchedule() { // 스케쥴을 추가한다.
 			cout << "새로운 스케줄을 추가합니다." << endl;
 			cout << "스케줄 이름: ";
 			cin >> name1;
@@ -406,7 +406,7 @@ class MainObj {
 			savecheck = 1;
 
 		}
-		void findPath() {
+		void findPath() { // 최적경로를 찾는다
 			int choice;
 			int now_time;
 			string now_time_str;
@@ -504,7 +504,7 @@ class MainObj {
 			cout << "모든 스케줄 출력이 끝났습니다." << endl;
 			
 		}
-		void userMatch() {
+		void userMatch() { // 유저를 매칭한 후 스케쥴을 매치한다
 			int choice;
 			int now_time;
 			string now_time_str;
@@ -599,14 +599,13 @@ class MainObj {
 			}
 
 		}
-
 };
 
 int main() {
 	int command = 0;
 	int isFirstLogin;
 	bool isNewUser = false;
-	MainObj mainObj = MainObj();
+	MainObj mainObj = MainObj(); // 메인 객체 생성
 
 	mainObj.clear();
 

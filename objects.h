@@ -43,7 +43,6 @@ class User
 		string get_password() const;
 		list<Schedule> get_schedule_list();
         void insert_schedule(Schedule schedule);
-        string find_optimized_schedule_path();
         void print();
 		void print_schedule();
 		void change_name(string);
