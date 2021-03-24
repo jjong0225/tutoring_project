@@ -1,6 +1,6 @@
 #include "objects.h"
 #include "data_structure.h"
-
+#include <iostream>
 // 1. UserTreeNode 대하여 Tree구조 형성 
 
 void insert_node(UserTreeNode *&root, User &userNode)
@@ -169,6 +169,140 @@ void rotate_right(T *&root, T * n)
 }
 
 template <typename T>
+T *sibling(T * n)
+{
+    if(n == n->parent->left)
+        return n->parent->right;
+    else
+        return n->parent->left;
+}
+
+template <typename T>
+void replace_node(T *n, T *child)
+{
+    child->parent = n -> parent;
+    if(n->parent->left == n)
+        n->parent->left = child;
+    else if(n->parent->right == n)
+        n->parent->right = child;
+}
+
+template <typename T>
+void delete_one_child(T *n, T *root)
+{
+    T *child;
+    if(n -> right == NULL) 
+        child = n -> left;
+    else
+        child = n -> right;
+    replace_node(n, child);
+
+    if(n->color == BLACK)
+    {
+        if(child->color == RED) // 루트 체크
+            child->color = BLACK;
+        else
+            delete_case1(child, root);
+    }
+    free(n);
+}
+
+template <typename T>
+void delete_case1(T *n, T *root)
+{
+    if(n->parent != NULL)
+        delete_case2(n, root);
+}
+
+template <typename T>
+void delete_case2(T *n, T *root)
+{
+    if(n->parent != NULL) // Sibilling
+    {
+        T *s = sibling(n);
+        if(s->color == RED)
+        {
+            n->parent->color = RED;
+            s->color = BLACK;
+            if(n == n->parent->left)
+                rotate_left(n->parent, root);
+            else
+                rotate_right(n->parent, root);
+        }
+    }
+    delete_case3(n, root);
+}
+
+template <typename T>
+void delete_case3(T *n, T *root)
+{
+    T *s = sibling(n);
+    if((n->parent->color == BLACK) && (s->color == BLACK) 
+    && (s->left->color == BLACK) && (s->right->color == BLACK))
+        {
+            s->color = RED;
+            delete_case1(n->parent, root);
+        }
+    else
+        delete_case4(n, root);
+}
+
+template <typename T>
+void delete_case4(T *n, T *root)
+{
+    T *s = sibling(n);
+
+    if((n->parent->color == RED) && (s->color == BLACK) &&
+    (s->left->color == BLACK) && (s->right->color == BLACK))
+    {
+        s->color = RED;
+        n->parent->color = BLACK;
+    }
+    else
+        delete_case5(n, root);
+}
+
+template <typename T>
+void delete_case5(T *n, T *root)
+{
+    T *s = sibling(n);
+    if(s->color == BLACK)
+    {
+        if((n == n->parent->left) && (s->right->color == BLACK) && s->left->color == RED)
+        {
+            s->color = RED;
+            s->left->color = BLACK;
+            rotate_right(s, root);
+        }else if ((n == n->parent->right) && (s->left->color == BLACK) && (s->right->color == RED))
+        {
+            s->color = RED;
+            s->right->color = BLACK;
+            rotate_left(s, root);
+        }
+    }
+    delete_case6(n, root);
+}
+
+template <typename T>
+void delete_case6(T *n, T *root)
+{
+    T *s = sibling(n);
+    s->color = n->parent->color;
+    n->parent->color = BLACK;
+    if(n == n->parent->left)
+    {
+        s->right->color = BLACK;
+        rotate_left(n->parent, root);
+    }
+    else
+    {
+        s->left->color = BLACK;
+        rotate_right(n->parent, root);
+    }
+}
+
+
+template <typename T>
 void reviseTree(T *&root, T *node)
 {
     //부모 노드가 레드인데, 부모님의 형제가 없거나 블랙일 때 - 회전
@@ -214,7 +348,35 @@ void reviseTree(T *&root, T *node)
 
 void delete_node(UserTreeNode *root, int key)
 {
-    
+    UserTreeNode *now_node = search(root, key);
+    if(now_node == NULL || now_node->data.get_id() != key)
+    {
+        std::cout << "Wrong station number error : Please enter the correct name of the station\n";
+        return;
+    }
+    if(now_node->parent == NULL) // root는 제거 불가!
+        return;
+
+    if(now_node->left == NULL && now_node->right == NULL)
+    {
+        if(now_node->parent->left == now_node)
+            now_node->parent->left = NULL;
+        else
+            now_node->parent->right = NULL;
+        free(now_node);
+        return;
+    }
+
+    UserTreeNode *successor_node = now_node -> right;
+    if(successor_node == NULL)
+        delete_one_child(now_node, root);
+    else
+    {
+        while(successor_node->left != NULL)
+            successor_node = successor_node->left;
+        now_node->data = successor_node->data;
+        delete_one_child(successor_node, root);
+    }
 }
 
 
@@ -293,6 +455,36 @@ void insert_node(MetroTreeNode *&root, Metro &metroNode)
     reviseTree(root, this_node);//리스트럭쳐 리컬러링 확인/적용 함수 추가
 }
 
+
 void delete_node(MetroTreeNode *root, int key)
 {
+    MetroTreeNode *now_node = search(root, key);
+    if(now_node == NULL || now_node->data.get_id() != key)
+    {
+        std::cout << "Wrong station number error : Please enter the correct name of the station\n";
+        return;
+    }
+    if(now_node->parent == NULL) // root는 제거 불가!
+        return;
+
+    if(now_node->left == NULL && now_node->right == NULL)
+    {
+        if(now_node->parent->left == now_node)
+            now_node->parent->left = NULL;
+        else
+            now_node->parent->right = NULL;
+        free(now_node);
+        return;
+    }
+
+    MetroTreeNode *successor_node = now_node -> right;
+    if(successor_node == NULL)
+        delete_one_child(now_node, root);
+    else
+    {
+        while(successor_node->left != NULL)
+            successor_node = successor_node->left;
+        now_node->data = successor_node->data;
+        delete_one_child(successor_node, root);
+    }
 }

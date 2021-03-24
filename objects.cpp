@@ -33,12 +33,10 @@ string Schedule::get_station_name() {
 void Schedule::print()
 {
 	// 스케쥴 프린트
-	cout << "[Schedule]" << endl;
-	cout << this->name << endl;
-	cout << this->id << endl;
-	cout << this->start_time << endl;
-	cout << this->end_time << endl;
-	cout << this->station_name << endl;
+	cout << "스케줄 이름: " << this->name << endl;
+	cout << "시작시간: " << this->start_time << endl;
+	cout << "종료시간: " << this->end_time << endl;
+	cout << "스케줄 장소: " << this->station_name << endl;
 }
 
 // User Class
@@ -116,6 +114,10 @@ void User::delete_schedule(int index)
 void User::change_station_name(string new_name)
 {
 	this -> station_name = new_name;
+}
+void User::change_password(string newPW)
+{
+	this -> password = newPW;
 }
 
 // Metro Class

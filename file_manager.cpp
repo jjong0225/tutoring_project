@@ -22,8 +22,8 @@ UserTreeNode* read_user_data()
 
 		for(auto user : userData) {
 			std::string name = user["name"].asString();
+			std::string password = user["password"].asString();
 			std::string station_name = user["station_name"].asString();
-			string password = user["password"].asString();
 
 			User userObj = User(name, station_name, password);
 
@@ -42,7 +42,7 @@ UserTreeNode* read_user_data()
 		}
 	}
 	else
-		std::cerr << "Failed to parse Json";
+		std::cerr << "Failed to parse Json user";
 	
 	return root;
 }
@@ -108,7 +108,7 @@ void save_user_data(UserTreeNode* root) {
 		ret.append("\t{\n");
 
 		ret.append("\t\t\"name\" : \"").append(now->data.get_name()).append("\",\n");
-		ret.append("\t\t\"password\" : ").append(now->data.get_password()).append(",\n");
+		ret.append("\t\t\"password\" : \"").append(now->data.get_password()).append("\",\n");
 		ret.append("\t\t\"station_name\" : \"").append(now->data.get_station_name()).append("\",\n");
 		ret.append("\t\t\"schedule_list\" :\n");
 
