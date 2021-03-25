@@ -247,14 +247,7 @@ class MainObj {
 				cout << endl;
 			}
 
-			/*
-				@ BFS를 통해 Red black tree 를 탐색하여 지하철 graph를 생성함.
-			    @이동시간과 열차 대기 시간을 포함한 최소 소요 시간을 구하기 위해 다익스트라 알고리즘을 사용하였으며, 우선순위 큐를 이용해 다익스트라의 시간을 단축함.
-				@다익스트라에 저장된 path 배열을 Stack을 사용해 역추적하여 최단거리 이동경로를 얻어냄.
-				@이진 검색 알고리즘을 사용하여 마지막 열차 시간을 찾는 시간을 단축함.
-				@다익스트라를 통해 얻은 두 user의 최소 이동 소요시간을 비교하여 이동거리가 비슷한 중간역을 찾아줌.
-				
-			*/	
+			
 		}
 		void printWelcomMsg() { // 웰컴 메세지 출력
 			cout << "안녕하세요, " << user->data.get_name() << "님. 반갑습니다!" << endl;
@@ -642,6 +635,7 @@ class MainObj {
 
 			bool success= match_schedule(metro_root,user_root,user,B,start_time,end_time,now_time,name);
 			if(success) savecheck = 1;
+			enter(3);
 
 			
 		}
