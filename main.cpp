@@ -119,7 +119,7 @@ class MainObj {
 			GetConsoleMode(hStdin, &mode);
 			SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
 
-			while((ch[i]=getc(stdin))!='\n')
+			while((ch_arr[i]=getc(stdin))!='\n')
 				{
 					cout<<"*";
 					i++;
