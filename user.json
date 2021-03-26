@@ -1,20 +1,6 @@
 [
 	{
-		"name" : "김효민",
-		"password" : "1234",
-		"station_name" : "종각",
-		"schedule_list" :
-		[
-			{
-				"name" : "멘토링",
-				"station_name" : "서울역",
-				"start_time" : 900,
-				"end_time" : 1200
-			}
-		]
-	},
-	{
-		"name" : "안종훈",
+		"name" : "james",
 		"password" : "1234",
 		"station_name" : "서울역",
 		"schedule_list" :
@@ -31,29 +17,6 @@
 				"start_time" : 1400,
 				"end_time" : 1500
 			}
-		]
-	},
-	{
-		"name" : "박상욱",
-		"password" : "1234",
-		"station_name" : "충무로",
-		"schedule_list" :
-		[
-			{
-				"name" : "수업",
-				"station_name" : "을지로3가",
-				"start_time" : 1500,
-				"end_time" : 1700
-			}
-		]
-	},
-	{
-		"name" : "james",
-		"password" : "1234",
-		"station_name" : "서울역",
-		"schedule_list" :
-		[
-
 		]
 	}
 ]
