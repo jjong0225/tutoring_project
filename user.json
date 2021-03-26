@@ -1,7 +1,7 @@
 [
 	{
 		"name" : "james",
-		"password" : 1234,
+		"password" : -160425664,
 		"station_name" : "서울역",
 		"schedule_list" :
 		[
@@ -12,10 +12,10 @@
 				"end_time" : 1300
 			},
 			{
-				"name" : "수업",
-				"station_name" : "종로5가",
-				"start_time" : 1400,
-				"end_time" : 1500
+				"name" : "ㅇㄹㅁ",
+				"station_name" : "동대문",
+				"start_time" : 1800,
+				"end_time" : 1900
 			}
 		]
 	},
@@ -23,6 +23,15 @@
 		"name" : "박상욱",
 		"password" : 1792162807,
 		"station_name" : "서울역",
+		"schedule_list" :
+		[
+
+		]
+	},
+	{
+		"name" : "백성준",
+		"password" : -160425664,
+		"station_name" : "동대문",
 		"schedule_list" :
 		[
 
