@@ -443,8 +443,9 @@ class MainObj {
 			if(Metro_check(metro_root,hash<string>{}(station))){
 				time1=convert_time_input(time1);
 				time2=convert_time_input(time2);
-				list <Schedule> li = user->data.get_schedule_list();	
-				if(Find_empty_time(li,time1,time2).second ==1 ){
+				list <Schedule> li = user->data.get_schedule_list();
+				li.sort(schedule_cmp);
+				if((li).size()==0 || li.front().get_start_time()> time1|| Find_empty_time(li,time1,time2).second ==1 ){
 				Schedule schedule2 = Schedule(name1, time1, time2, station);
 				user->data.insert_schedule(schedule2);
 				savecheck = 1;
