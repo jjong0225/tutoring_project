@@ -1,7 +1,7 @@
 ![1조 ppt-page-001](https://user-images.githubusercontent.com/28854263/112650143-725b0500-8e8e-11eb-9aa2-bb2d9b169639.jpg)
 ![1조 ppt-page-002](https://user-images.githubusercontent.com/28854263/112650149-738c3200-8e8e-11eb-8166-cd33a4033c46.jpg)
 ![1조 ppt-page-003](https://user-images.githubusercontent.com/28854263/112650156-7555f580-8e8e-11eb-9576-d5d044913fa9.jpg)
-![1조 ppt-page-004](https://user-images.githubusercontent.com/28854263/112650159-75ee8c00-8e8e-11eb-8d02-e6f54dfe99d8.jpg)
+![1조 ppt](https://user-images.githubusercontent.com/28854263/112652790-21004500-8e91-11eb-954e-deee3c6971af.jpg)
 ![1조 ppt-page-005](https://user-images.githubusercontent.com/28854263/112650162-771fb900-8e8e-11eb-865a-882a489cb327.jpg)
 ![1조 ppt-page-006](https://user-images.githubusercontent.com/28854263/112650170-77b84f80-8e8e-11eb-94fc-035052d62ed3.jpg)
 ![1조 ppt-page-007](https://user-images.githubusercontent.com/28854263/112650173-78e97c80-8e8e-11eb-9ca0-195d9d8f2bd4.jpg)
