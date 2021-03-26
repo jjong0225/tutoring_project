@@ -1,5 +1,3 @@
-# Manage your schedule
-
 ![1조 ppt-page-001](https://user-images.githubusercontent.com/28854263/112650143-725b0500-8e8e-11eb-9aa2-bb2d9b169639.jpg)
 ![1조 ppt-page-002](https://user-images.githubusercontent.com/28854263/112650149-738c3200-8e8e-11eb-8166-cd33a4033c46.jpg)
 ![1조 ppt-page-003](https://user-images.githubusercontent.com/28854263/112650156-7555f580-8e8e-11eb-9576-d5d044913fa9.jpg)
