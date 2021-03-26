@@ -342,7 +342,7 @@ class MainObj {
 			
 		}
 		void changePassword() { // 비밀번호 변경
-			string currPW, newPW1, newPW2;
+			int currPW, newPW1, newPW2;
 			int pwQuery;
 			while(true){
 				cout << "기존 비밀번호를 입력해주세요." << endl;

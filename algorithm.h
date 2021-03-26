@@ -22,7 +22,7 @@ typedef struct track_info{
     int departure_time;
 
 }Track_info;
-UserTreeNode * login(UserTreeNode *root, string username, string password);
+UserTreeNode * login(UserTreeNode *root, string username, int password);
 void init_graph( MetroTreeNode * root_ptr);
 bool schedule_cmp(Schedule  &a, Schedule  &b);
 int GetTimeWeight(int start ,int end);

@@ -1,7 +1,7 @@
 [
 	{
 		"name" : "james",
-		"password" : "1234",
+		"password" : 1234,
 		"station_name" : "서울역",
 		"schedule_list" :
 		[
@@ -17,6 +17,15 @@
 				"start_time" : 1400,
 				"end_time" : 1500
 			}
+		]
+	},
+	{
+		"name" : "박상욱",
+		"password" : 1792162807,
+		"station_name" : "서울역",
+		"schedule_list" :
+		[
+
 		]
 	}
 ]

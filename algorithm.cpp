@@ -7,7 +7,7 @@ MetroTreeNode *r;
 map<int,Node> Node_map;
 map<int, Node> ::iterator it_node = Node_map.begin();
 
-UserTreeNode * login(UserTreeNode *root, string username, string password){ // 로그인 함수
+UserTreeNode * login(UserTreeNode *root, string username, int password){ // 로그인 함수
     UserTreeNode * current = search(root, hash<string>{}(username));
     if(current == nullptr)
         return nullptr;

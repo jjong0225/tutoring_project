@@ -115,9 +115,9 @@ void User::change_station_name(string new_name)
 {
 	this -> station_name = new_name;
 }
-void User::change_password(string newPW)
+void User::change_password(int newPW)
 {
-	this -> password = hash<string>{}(newPW);
+	this -> password = newPW;
 }
 
 // Metro Class
