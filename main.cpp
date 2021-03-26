@@ -446,7 +446,25 @@ class MainObj {
 				time2=convert_time_input(time2);
 				list <Schedule> li = user->data.get_schedule_list();
 				li.sort(schedule_cmp);
-				if((li).size()==0 || li.front().get_start_time()> time1|| Find_empty_time(li,time1,time2).second ==1 ){
+				if((li).size()!=0&&li.front().get_start_time()> time1){
+					list <Schedule> :: iterator iter = li.begin();
+					bool flag= false;
+					for(int i=0; i<li.size(); i++ ){
+						if(time2 >=iter-> get_end_time() || time2 >= iter->get_start_time()){
+							cout<<"입력하신 시간에 이미 스케줄이 꽉 차있습니다."<<endl;
+							flag=true;
+							break;
+						}
+						iter++;
+					}
+					if(flag==false){
+						Schedule schedule2 = Schedule(name1, time1, time2, station);
+						user->data.insert_schedule(schedule2);
+						savecheck = 1;
+						cout << "스케줄이 추가되었습니다." << endl;
+					}
+				}
+				else if((li).size()==0|| Find_empty_time(li,time1,time2).second ==1){ 
 				Schedule schedule2 = Schedule(name1, time1, time2, station);
 				user->data.insert_schedule(schedule2);
 				savecheck = 1;

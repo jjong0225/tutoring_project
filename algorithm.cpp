@@ -566,11 +566,21 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	cin.clear();
 	cin.ignore(10, '\n');	
                         						
-	if(op=='Y'||op=='y'){
-		 cout<<endl<<A->data.get_name()<<" USER님의 이전 스케줄 "<<endl;
-   		 before->print();}
-	A_station=hash<string>{}(before->get_station_name()); 
+		if(op=='Y'||op=='y'){
+			 cout<<endl<<A->data.get_name()<<" USER님의 이전 스케줄 "<<endl;
+			 before->print();}
+		A_station=hash<string>{}(before->get_station_name());
+		
 	}else{
+		if(li_A.size()!=0){
+			list <Schedule> :: iterator iter = li_A.begin();
+			for(int i=0; i<li_A.size(); i++ ){
+			if( meeting_end>=iter-> get_end_time()){
+				cout<<"다음 스케줄이 있는 시간입니다!  "<<endl;
+				return false;}
+				iter++;
+			}
+		}	
 		cout<<endl<<A->data.get_name()<<" USER님의 스케줄이 비었습니다."<<endl;
 		A_station=hash<string>{}(A->data.get_station_name());
 	}
@@ -595,6 +605,14 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	if(before2!=NULL){
 	B_station=hash<string>{}(before2->get_station_name());	
 	}else{
+		if(li_B.size()!=0){
+			list <Schedule> :: iterator iter = li_B.begin();
+			for(int i=0; i<li_B.size(); i++ ){
+			if( meeting_end>=iter-> get_end_time()){
+				cout<<B->data.get_name()<<" USER님의 스케줄이 꽉 찬 시간입니다. 다른 시간에 스케줄을 잡아주세요"<<endl;  return false ;
+				return false;}
+				iter++;}
+		}
 		cout<<B->data.get_name()<<" USER님의 스케줄이 비었습니다."<<endl;
 		B_station=hash<string>{}(B->data.get_station_name());
 	}
