@@ -58,9 +58,9 @@ class MainObj {
 		int sub_command, subb_command;
 
 		string name, name1, fname, rmname, cname, cstation;
-		string station, station1, station3, password, currTime;
+		string station, station1, station3, currTime;
 
-		int time1, time2, savec, station2, redata, fdata, rmschedule, fstation;
+		int password, time1, time2, savec, station2, redata, fdata, rmschedule, fstation;
 
 		UserTreeNode* user;
 
@@ -108,9 +108,10 @@ class MainObj {
 			
 			return command;
 		}
-		string acceptPwd() {
+		int acceptPwd() {
 			string s;
 			char ch_arr[100] = {'\0',};
+			int hashValue;
 			int i=0;
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)	
@@ -152,7 +153,11 @@ class MainObj {
 
 			cout << endl;
 			s = string(ch_arr, i);
-			return s;
+
+
+			hashValue = hash<string>{}(s);
+
+			return hashValue;
 			
 		}
 		void clear() { // System call clear호출

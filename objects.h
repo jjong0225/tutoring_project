@@ -32,15 +32,15 @@ class User
         string name; // 유저 이름
         string station_name; // 유저의 역, 스케쥴의 언제나 맨 처음이고 언제나 맨 마지막이다. 변하면 안됨
         int id; // 유저 아이디
-		string password;
+		int password;
         list<Schedule> schedule_list; // 스케쥴의 백터
     public :
-        User(string param_string, string param_main_station_code, string password);
+        User(string param_string, string param_main_station_code, int password);
         User(const User &copy_user);
 		string get_name() const;
 		string get_station_name() const;
 		int get_id() const;
-		string get_password() const;
+		int get_password() const;
 		list<Schedule> get_schedule_list();
         void insert_schedule(Schedule schedule);
         void print();
