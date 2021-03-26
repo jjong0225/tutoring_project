@@ -499,7 +499,8 @@ pair<int, pair<string,vector<pair<int,int>>>>find_max_departure_time(int A_stati
     return make_pair(gap.first,track_optimize_path);
 }
 
-pair<Schedule ,int> Find_empty_time(list <Schedule> li_schedule, int meeting_start, int meeting_end ){ // Find empty time
+pair<Schedule,int> Find_empty_time(list <Schedule> li_schedule, int meeting_start, int meeting_end ){ // Find empty time
+	
 	list<Schedule> :: iterator lts = li_schedule.begin();
 	Schedule * before=NULL;
 	  for(int i=0;i<li_schedule.size();i++){
@@ -538,8 +539,11 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	int A_station;
 	int B_station;
 	init_graph(metro_r);
+	list <Schedule> li_A = A->data.get_schedule_list();
+	li_A.sort(schedule_cmp);
 	
-    pair<Schedule , int> A_result=Find_empty_time(A->data.get_schedule_list(),meeting_start,meeting_end);
+    if(li_A.size()!=0 && li_A.front().get_start_time() < meeting_start){
+		pair<Schedule ,int> A_result=Find_empty_time(li_A,meeting_start,meeting_end);
 	
 	if(A_result.second ==-1 ){
 		cout<<print_HHMM(to_string(meeting_start))<< "~" << print_HHMM(to_string(meeting_end))<<" 는 이미 스케줄이 꽉 찬 시간입니다!"<<endl;
@@ -552,6 +556,7 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
         return false;
 	}else{
 		before=&A_result.first;
+		}
 	}
 	
 	if(before!=NULL){
@@ -571,14 +576,18 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 	}
     
 	bool check=true;
-	pair<Schedule , int> B_result=Find_empty_time(B->data.get_schedule_list(),meeting_start,meeting_end);
+	list <Schedule> li_B = B->data.get_schedule_list();
+	li_B.sort(schedule_cmp);
 	
-	if(B_result.second ==-1 ){
-		check= false;
-	}else if(B_result.second ==0){
-        check= false;
-	}else{
-		before2=&B_result.first;
+	if(li_B.size()!=0 && li_B.front().get_start_time() < meeting_start){	
+		pair<Schedule , int> B_result=Find_empty_time( li_B ,meeting_start,meeting_end);
+		if(B_result.second ==-1 ){
+			check= false;
+		}else if(B_result.second ==0){
+			check= false;
+		}else{
+			before2=&B_result.first;
+		}
 	}
 
     if(!check){ cout<<B->data.get_name()<<" USER님의 스케줄이 꽉 찬 시간입니다. 다른 시간에 스케줄을 잡아주세요"<<endl;  return false ;}
@@ -650,7 +659,7 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 
 
    	   if(min_arrive_time_A > meeting_start){
-			cout<<"예상 도착 시간  " +print_HHMM(to_string(min_arrive_time_A))<<endl;
+			cout<<"예상 도착 시간  " +print_HHMM(convert_time(min_arrive_time_A))<<endl;
        		cout<<"요청한 매칭 시간까지 도착할 수 없습니다. 다른 시간에 스케줄을 잡아주세요"<<endl;
         	return false;
    		}
@@ -675,7 +684,7 @@ bool match_schedule(MetroTreeNode *metro_r, UserTreeNode * user_r, UserTreeNode 
 			    else  min_arrive_time_B += default_time;
 
 			  if(min_arrive_time_B > meeting_start){
-				cout<<"예상 도착 시간  " +print_HHMM(to_string(min_arrive_time_B))<<endl;
+				cout<<"예상 도착 시간  " +print_HHMM(convert_time(min_arrive_time_B))<<endl;
 				cout<<"상대방이 요청한 매칭 시간까지 도착할 수 없습니다. 다른 시간에 스케줄을 잡아주세요"<<endl;
 				return false;
 				}
