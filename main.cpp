@@ -438,6 +438,7 @@ class MainObj {
 				cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
 				cin>>time2;
 			}
+			if(time1 > time2){cout<<"종료시간이 시작시간보다 빠를 수 없습니다.\n"; enter(3); return;}
 			cout<< "스케줄 장소: ";
 			cin >>station;
 			if(Metro_check(metro_root,hash<string>{}(station))){
@@ -613,6 +614,8 @@ class MainObj {
 			name_a=user->data.get_name();
 			cout<<"상대 유저의 이름: " ;
 			cin>>name_b;
+			UserTreeNode*B =search(user_root,hash<string>{}(name_b));
+			if(B==NULL){cout<<name_b<<"님은 등록되지 않은 회원 입니다.\n"; enter(3); return;}
 			cout<<"스케줄 이름: ";
 			cin>>name;
 			cout<<"스케줄 시작 시간: ";
@@ -620,7 +623,7 @@ class MainObj {
 			while(cin.fail()==true){
 				cin.clear();
 				cin.ignore(10, '\n');
-				cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
+				cout<<"시간은 숫자로 입력해주세요!\n재입력: ";
 				cin>>start_time;
 			}
 			cout<< "스케줄 종료 시간: "; 
@@ -631,16 +634,13 @@ class MainObj {
 				cout<<"시간은 숫자로 입력해주세요!\n재입력 : ";
 				cin>>end_time;
 			}
-			
+			if(start_time > end_time){cout<<"종료시간이 시작시간보다 빠를 수 없습니다.\n"; enter(3); return;}
 			start_time=convert_time_input(start_time);
 			end_time=convert_time_input(end_time);
 			
 			int id_a=hash<string>{}(name_a);
 			int id_b=hash<string>{}(name_b);
 			
-			UserTreeNode*B =search(user_root,id_b);
-			if(B==NULL){cout<<name_b<<"님은 등록되지 않은 회원 입니다.\n"; enter(3); return;}
-
 			bool success= match_schedule(metro_root,user_root,user,B,start_time,end_time,now_time,name);
 			if(success) savecheck = 1;
 			enter(3);
