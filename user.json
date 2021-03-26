@@ -46,5 +46,14 @@
 				"end_time" : 1700
 			}
 		]
+	},
+	{
+		"name" : "james",
+		"password" : "1234",
+		"station_name" : "서울역",
+		"schedule_list" :
+		[
+
+		]
 	}
 ]

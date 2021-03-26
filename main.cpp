@@ -100,6 +100,7 @@ class MainObj {
 		int accept() { // command를 받는다, command외의 값을 입력받으면 오류비트를 삭제하고 입력스트림을 비워준다.
 			int command;
 
+			cout << "> ";
 			cin >> command;
 
 			cin.clear();
@@ -283,7 +284,8 @@ class MainObj {
 				UserTreeNode *user4 = search(user_root, hash<string>{}(name));
 				if(!user4){
 					cout << "비밀번호: ";
-					cin >> password;
+					enter(3);
+					password = acceptPwd();
 					cout <<"기준 출발역: ";
 					cin >> station;
 					if(Metro_check(metro_root,hash<string>{}(station))){
