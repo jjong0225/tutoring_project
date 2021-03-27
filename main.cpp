@@ -673,6 +673,7 @@ class MainObj {
 				if(savec == 1){
 					save_user_data(user_root);
 					savecheck = 0;
+					findcheck = 0;
 					cout << "저장완료"<< endl;
 					cout << "로그아웃 되었습니다" << endl;
 				}
@@ -830,6 +831,7 @@ int main() {
 			case startRegister:
 				if(mainObj.tryRegister() == true)
 					isNewUser = true;
+				mainObj.enter();
 				break;
 
 			case startDescription:
